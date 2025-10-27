@@ -1,0 +1,1827 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Happy Birthday → Someone</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+<style>
+  /* GLOBAL */
+  body { margin:0; background-color:#141414; overflow:hidden; height:100vh; font-family: 'Poppins', sans-serif; cursor:crosshair; }
+  .text { position:absolute; color:#fff; text-shadow:0 0 20px rgba(255,255,255,0.8),0 0 40px rgba(255,200,200,0.6); font-weight:900; opacity:0; transition:opacity .8s ease, transform .8s ease; user-select:none; z-index:7; }
+  #readyText,#goText { font-size:5em; top:45%; left:50%; transform:translate(-50%,-50%) scale(.9); }
+  #readyText.show,#goText.show { opacity:1; transform:translate(-50%,-50%) scale(1.05); }
+  #countdown-container { display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); justify-content:center; align-items:center; z-index:8; }
+  .countdown { display:flex; gap:20px; }
+  .flip-box { position:relative; width:120px; height:160px; perspective:800px; }
+  .flip-inner { position:absolute; width:100%; height:100%; border-radius:15px; background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); color:#fff; font-size:100px; font-weight:600; text-align:center; line-height:160px; box-shadow:0 8px 20px rgba(0,0,0,0.4); transform-style:preserve-3d; transition:transform .7s ease-in-out; }
+  .flip-inner.flipping { transform:rotateX(-180deg); }
+  #fadeOverlay { position:fixed; inset:0; background:black; opacity:0; transition:opacity 1s ease; z-index:9999; pointer-events:none; }
+
+  /* canvases */
+  canvas { position:absolute; top:0; left:0; }
+  #birthday { z-index:1; display:none; }
+  #c { z-index:2; display:none; pointer-events:none; }
+  /* three.js will be inserted dynamically with z-index 6 so it's above 2D canvases when shown */
+  /* logo image for Scorpio */
+  .logo { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scaleX(1.0) translateX(50px) rotate(-10deg); opacity:0; max-width:60%; z-index:9; pointer-events:none; transition:opacity .4s ease-in-out; filter:brightness(1.8); }
+
+  h1 { display:none; }
+
+/* === SPIRAL SCENE === */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.spiral {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: absolute;
+  color: #e0ecef;
+  font-family: "Cormorant Garamond", serif;
+font-weight: 500;
+letter-spacing: 1px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  z-index: 20;
+}
+
+.character {
+  font-family: "Cormorant Garamond", serif !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px !important;
+  text-transform: none !important;
+  font-size: 2.8rem;
+  color: #3dedf3;
+  text-shadow: 0 0 15px rgba(255,255,255,0.7),
+               0 0 35px rgba(255,255,255,0.4),
+               0 0 55px rgba(180,180,255,0.2);
+
+  /* 🔥 ini bagian penting biar efek spiral tetap jalan */
+  transform: translateY(calc(sin(var(--angle)) * 100px))
+             scale(calc(cos(var(--angle)) * 0.5 + 0.5));
+  animation: spiral 4s linear infinite;
+}
+
+@keyframes spiral {
+  0% { --angle: 0deg; }
+  100% { --angle: 360deg; }
+}
+
+@media (max-width: 490px) {
+  .character {
+    font-size: 2.2rem;
+  }
+}
+
+/* === NOVEMBER SKIES SCENE === */
+#transmission {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #0c0c0c;
+  opacity: 0;
+  z-index: 25;
+  transition: opacity 1.5s ease;
+  overflow: hidden;
+}
+
+/* sembunyikan teks sebelum animasi huruf dimulai */
+#transmission h1,
+#transmission p {
+  opacity: 0;
+}
+
+/* Container tengah */
+.mast {
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  text-align: center;
+  padding: 4rem 2rem;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform: translateY(-8%);
+}
+
+/* Garis neon atas–bawah */
+.mast::before,
+.mast::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(270deg, #ff00ff, #00ffff, #ff00ff);
+  background-size: 400% 400%;
+  animation: moveNeon 2s linear infinite;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.8),
+              0 0 25px rgba(0, 255, 255, 0.8);
+}
+.mast::before { top: 0; }
+.mast::after  { bottom: 0; }
+
+@keyframes moveNeon {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Tulisan pojok kanan bawah (J.Tan) */
+.mast__signature-text {
+  opacity: 0;
+  visibility: hidden; /* 🔹 penting: sembunyikan total di awal */
+  position: absolute;
+  right: 2.2rem;
+  bottom: 1.3rem;
+  font-size: 1.3rem;
+  font-family: "Dancing Script", cursive;
+  color: #ffe6ff;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 10px rgba(255, 180, 255, 0.8),
+               0 0 18px rgba(153, 221, 255, 0.6);
+  transition: opacity 0.4s ease, text-shadow 0.4s ease;
+}
+
+.mast__signature-text:hover {
+  opacity: 1;
+  text-shadow: 0 0 15px rgba(255, 200, 255, 1),
+               0 0 25px rgba(153, 221, 255, 0.9);
+}
+
+/* === Gaya teks di dalam scene November Skies === */
+#transmission h1 {
+  font-family: 'Cutive Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+  color: #ffffff;
+}
+
+#transmission p {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin: 0.8em 0;
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  color: #ffffff;
+}
+
+/* Isi teks */
+.mast__header { position: relative; z-index: 2; margin: auto; max-width: 750px; }
+.mast__title {
+  font-family: "Cutive Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+  color: #fff;
+}
+.sep {
+  border: 0;
+  width: 3em;
+  height: 1px;
+  margin: 1em auto;
+  background-color: rgba(255,255,255,0.4);
+}
+.mast__text {
+  font-family: "Cutive Mono", monospace;
+  font-size: 1.2rem;
+  line-height: 1.9;
+  margin: 0 auto;
+  text-align: justify;
+  text-align-last: center;
+  color: #fff;
+}
+.mast__text p {
+  margin: 0.8em 0;
+  text-align: center;
+}
+.mast__text span {
+  opacity: 0;
+  display: inline-block;
+  animation: letterGlow 0.6s ease forwards;
+}
+.nobreak-text { display: inline-block; white-space: nowrap; }
+
+@keyframes letterGlow {
+  0%   { opacity: 0; text-shadow: 0 0 2px rgba(255,255,255,0.1);}
+  50%  { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.9);}
+  100% { opacity: 0.9; text-shadow: 0 0 2px rgba(255,255,255,0);}
+}
+
+/* Import font baru */
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+
+/* === 🎯 Wrapper tengah untuk teks + kue === */
+#centerWrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 5;
+}
+
+/* === 🎉 Teks utama === */
+#wish {
+  color: #fff;
+  font-family: "Cutive Mono", monospace;
+  font-size: 2.5rem;
+  line-height: 1.4;
+  text-shadow: 0 0 20px rgba(255,255,255,0.8),
+               0 0 40px rgba(255,200,200,0.6);
+  margin: 0;
+}
+
+/* === 🎂 Kue di bawah teks === */
+#cakeWrapper {
+  position: relative;
+  margin-top: 438px; /* jarak di bawah teks */
+  margin-left: 38px; /* ⬅️ geser 100px ke kanan */
+  display: none;
+  pointer-events: none;
+  z-index: 3;
+  filter: drop-shadow(0 0 20px rgba(255, 200, 100, 0.4));
+}
+
+#cakeImg {
+  width: 170px; /* 🧁 jauh lebih kecil */
+  filter: brightness(0.9) contrast(1.1)
+  drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
+}
+
+/* 🕯️ Lilin ulang tahun kecil & terang */
+#birthdayCandle {
+  position: absolute;
+  top: 52%; /* sesuaikan posisi di atas kue */
+  left: 48%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+
+/* batang lilin */
+#candleBase {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 20px;
+  background: linear-gradient(to bottom, #ffb6c1 0%, #ff69b4 100%);
+  border-radius: 3px;
+  box-shadow:
+    0 -4px 8px rgba(255, 180, 60, 0.6),   /* pantulan cahaya api di atas */
+    0 2px 3px rgba(255, 100, 150, 0.5);   /* bayangan lembut di bawah */
+  z-index: 3;
+}
+
+/* 🔥 Api dengan efek cahaya kuning hidup */
+#candleFlame {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, 5%);
+  width: 13px;
+  height: 26px;
+  border-radius: 50% 50% 40% 40% / 85% 85% 25% 25%;
+  background: radial-gradient(circle at 50% 20%,
+              rgba(255,255,255,1) 0%,           
+              rgba(255,245,180,0.95) 25%,       
+              rgba(255,180,50,0.8) 55%,         
+              rgba(255,100,0,0.5) 80%,          
+              transparent 100%);
+  box-shadow:
+    0 0 10px rgba(255,220,100,0.8),
+    0 0 20px rgba(255,180,60,0.6),
+    0 0 35px rgba(255,140,40,0.4);
+  animation:
+    candleFlicker 0.05s infinite alternate ease-in-out,
+    candleFlash 0.25s infinite ease-in-out;
+  filter: brightness(1.8) contrast(1.2);
+  opacity: 1;
+  z-index: 5;
+}
+
+/* 🔧 Tambahan animasi agar nyala api benar-benar hidup */
+@keyframes candleFlicker {
+  0% { transform: translate(-50%, 5%) scaleY(1); }
+  50% { transform: translate(-50%, 6%) scaleY(1.1); }
+  100% { transform: translate(-50%, 5%) scaleY(0.95); }
+}
+
+@keyframes candleGlowPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 25px rgba(255,255,210,0.9),
+      0 0 60px rgba(255,210,120,0.7),
+      0 0 100px rgba(255,170,60,0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 35px rgba(255,255,230,1),
+      0 0 80px rgba(255,230,150,0.8),
+      0 0 120px rgba(255,180,70,0.6);
+  }
+}
+
+/* ✨ Api benar-benar berkedip cepat (terang–redup alami) */
+@keyframes candleFlash {
+  0%   { filter: brightness(1.4); opacity: 1; }
+  10%  { filter: brightness(2.0); opacity: 0.95; }
+  20%  { filter: brightness(1.6); opacity: 0.85; }
+  30%  { filter: brightness(2.3); opacity: 1; }
+  40%  { filter: brightness(1.7); opacity: 0.9; }
+  50%  { filter: brightness(2.2); opacity: 1; }
+  60%  { filter: brightness(1.5); opacity: 0.8; }
+  70%  { filter: brightness(2.0); opacity: 0.95; }
+  80%  { filter: brightness(1.6); opacity: 0.85; }
+  90%  { filter: brightness(2.4); opacity: 1; }
+  100% { filter: brightness(1.8); opacity: 0.9; }
+}
+
+/* ✨ Percikan api kecil di sekitar lilin */
+#candleSparks {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle,
+    rgba(255,240,180,1) 0%,
+    rgba(255,180,60,0.3) 70%,
+    transparent 100%);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation:
+    sparkFlicker 0.5s infinite ease-in-out,
+    sparkMove 1.2s infinite ease-in-out;
+  opacity: 0.8;
+  filter: blur(1px);
+  z-index: 6;
+}
+
+/* 🔸 Percikan berkedip */
+@keyframes sparkFlicker {
+  0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.3; transform: translateX(-50%) scale(1.4); }
+}
+
+/* 🔸 Percikan bergerak lembut naik-turun */
+@keyframes sparkMove {
+  0% { transform: translate(-50%, -1px); }
+  25% { transform: translate(-48%, -3px); }
+  50% { transform: translate(-52%, -6px); }
+  75% { transform: translate(-50%, -3px); }
+  100% { transform: translate(-50%, -1px); }
+}
+
+/* ✨ Tambahan percikan lain untuk variasi (opsional) */
+#candleSparks::before,
+#candleSparks::after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255,230,150,1) 0%,
+    rgba(255,180,60,0.2) 70%,
+    transparent 100%);
+  animation:
+    sparkFlicker 0.6s infinite ease-in-out alternate,
+    sparkMove 1.4s infinite ease-in-out alternate;
+}
+
+#candleSparks::before {
+  left: -6px;
+  animation-delay: 0.2s;
+}
+
+#candleSparks::after {
+  left: 6px;
+  animation-delay: 0.4s;
+}
+
+</style>
+</head>
+<body>
+
+  <!-- READY & GO -->
+  <div id="readyText" class="text">READY</div>
+  <div id="goText" class="text">GO!</div>
+
+  <!-- Countdown -->
+  <div id="countdown-container">
+    <div class="countdown">
+      <div class="flip-box"><div class="flip-inner" id="num">3</div></div>
+    </div>
+  </div>
+
+  <!-- Fade overlay -->
+  <div id="fadeOverlay"></div>
+
+  <!-- Fireworks (2D canvases) -->
+  <canvas id="birthday"></canvas>
+  <canvas id="c"></canvas>
+
+ <!-- ✨ Bungkus tulisan dan kue dalam satu container -->
+<div id="centerWrapper">
+
+  <h1 id="wish">Happy Birthday<br>Someone 🎂</h1>
+
+  <!-- 🎂 Birthday Cake + Candle -->
+  <div id="cakeWrapper">
+    <img id="cakeImg" src="https://s12.gifyu.com/images/b3d2t.png" alt="Birthday Cake" />
+    
+    <!-- 🕯️ Lilin kecil lengkap -->
+    <div id="birthdayCandle">
+      <div id="candleBase"></div>
+      <div id="candleFlame"></div>
+      <div id="candleSparks"></div>
+    </div>
+  </div>
+
+</div>
+
+  <!-- Audio elements -->
+  <audio id="readySound" src="https://cdn.jsdelivr.net/gh/hantulautz88/bdaysound/ready_iZVXBQL.mp3" preload="auto"></audio>
+  <audio id="goSound" src="https://cdn.jsdelivr.net/gh/hantulautz88/bdaysound/letx27s-go-352481.mp3" preload="auto"></audio>
+  <audio id="fireworkMusic" src="https://cdn.jsdelivr.net/gh/hantulautz88/bdaysound/WhatsApp%20Audio%202025-10-18%20at%2006.19.02.mpeg" preload="auto" loop></audio>
+
+<!-- ================= FUTURISTIC KEYPAD WITH PIN DISPLAY ================= -->
+<style>
+#pinScreen {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, #010203, #000);
+ animation: bgPulse 3.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  transition: opacity 1s ease;
+  overflow: hidden;
+}
+
+@keyframes bgPulse {
+  0%   { background: radial-gradient(circle at 50% 40%, #010203, #000); }
+  100% { background: radial-gradient(circle at 50% 40%, #02181a, #000); }
+}
+
+/* panel */
+#pinPanel {
+  background: linear-gradient(180deg, #04080b, #010304);
+  border-radius: 20px;
+  padding: 35px 25px 30px;
+  box-shadow:
+    0 0 40px rgba(0, 255, 200, 0.1),
+    inset 0 0 25px rgba(0, 255, 200, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* PIN display area */
+#pinDisplay {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.pinDigit {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(0,255,200,0.08), rgba(0,0,0,0.6));
+  border: 1px solid rgba(0,255,200,0.25);
+  color: #b8fff7;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 10px rgba(0,255,200,0.3);
+  box-shadow:
+    inset 0 0 10px rgba(0,255,200,0.1),
+    0 0 10px rgba(0,255,200,0.05);
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+.pinDigit.visible { opacity: 1; }
+
+/* keypad */
+#keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 260px;
+}
+
+/* keys */
+.key {
+  position: relative;
+  height: 60px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 30%, #0b1214 0%, #000 100%);
+  border: 1px solid rgba(0,255,200,0.2);
+  color: #b8fff7;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 0 8px rgba(0,255,200,0.12),
+    inset 0 0 12px rgba(0,255,200,0.05),
+    inset 0 -3px 10px rgba(0,255,200,0.08);
+  transition: all 0.15s ease;
+}
+.key::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  box-shadow: 0 0 16px rgba(0,255,200,0.25);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.key:hover::before { opacity: 1; }
+.key:active {
+  transform: scale(0.96);
+  box-shadow: inset 0 0 12px rgba(0,255,200,0.25), 0 0 8px rgba(0,255,200,0.2);
+}
+
+/* special keys */
+.key.back {
+  font-size: 1.3rem;
+  background: radial-gradient(circle at 50% 30%, #081013, #000);
+}
+.key.enter {
+  grid-column: 1 / span 3;
+  height: 60px;
+  margin-top: 14px;
+  background: linear-gradient(180deg, rgba(0,255,200,0.25), rgba(0,80,70,0.5));
+  border-color: rgba(0,255,200,0.4);
+  color: #e9fffb;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 0 25px rgba(0,255,200,0.25);
+}
+
+/* unlock glow */
+#pinScreen.unlocking::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.4), transparent 70%);
+  animation: unlockPulse 0.8s ease-out forwards;
+}
+
+@keyframes unlockPulse {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.4); }
+  100% { opacity: 0; transform: scale(2); }
+}
+
+/* shake wrong */
+#pinPanel.shake { animation: shake 0.4s ease; }
+@keyframes shake {
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-10px);}
+  40%{transform:translateX(8px);}
+  60%{transform:translateX(-6px);}
+  80%{transform:translateX(4px);}
+}
+</style>
+
+<div id="pinScreen">
+  <div id="pinPanel">
+    <div id="pinDisplay">
+      <div class="pinDigit" data-index="0"></div>
+      <div class="pinDigit" data-index="1"></div>
+      <div class="pinDigit" data-index="2"></div>
+      <div class="pinDigit" data-index="3"></div>
+    </div>
+    <div id="keypad">
+      <div class="key" data-val="1">1</div>
+      <div class="key" data-val="2">2</div>
+      <div class="key" data-val="3">3</div>
+      <div class="key" data-val="4">4</div>
+      <div class="key" data-val="5">5</div>
+      <div class="key" data-val="6">6</div>
+      <div class="key" data-val="7">7</div>
+      <div class="key" data-val="8">8</div>
+      <div class="key" data-val="9">9</div>
+      <div class="key" data-val="0">0</div>
+      <div class="key back" data-action="back">⌫</div>
+      <div class="key enter" data-action="enter">ENTER</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const correctPIN="1511";
+  const digits=[];
+  const maxLen=4;
+  const screen=document.getElementById('pinScreen');
+  const panel=document.getElementById('pinPanel');
+  const keypad=document.getElementById('keypad');
+  const displays=[...document.querySelectorAll('.pinDigit')];
+
+  function render(){
+    for(let i=0;i<maxLen;i++){
+      const val=digits[i];
+      displays[i].textContent=val ?? '';
+      if(val) displays[i].classList.add('visible');
+      else displays[i].classList.remove('visible');
+    }
+  }
+
+  function checkPIN(){
+    if(digits.join('')===correctPIN){
+  screen.classList.add('unlocking');
+
+  // ✨ langsung sembunyikan panel biar nggak kelihatan bayangannya
+  panel.style.transition = "opacity 0.3s ease";
+  panel.style.opacity = "0";
+
+  setTimeout(async()=>{
+    screen.style.opacity='0';
+    setTimeout(()=>{
+      screen.style.display='none';
+      screen.remove();
+    },1000);
+
+        try{
+          await readySound.play(); readySound.pause(); readySound.currentTime=0;
+          await goSound.play(); goSound.pause(); goSound.currentTime=0;
+          await fireworkMusic.play(); fireworkMusic.pause(); fireworkMusic.currentTime=0;
+        }catch(e){console.warn('Autoplay unlock fail',e);}
+        startSequence();
+      },500);
+    }else{
+      panel.classList.add('shake');
+      setTimeout(()=>panel.classList.remove('shake'),400);
+      digits.length=0; render();
+    }
+  }
+
+  keypad.addEventListener('click',e=>{
+    const k=e.target.closest('.key');
+    if(!k) return;
+    const v=k.dataset.val, a=k.dataset.action;
+    if(v){ digits.push(v); render(); if(digits.length===maxLen) checkPIN(); }
+    else if(a==='back'){ digits.pop(); render(); }
+    else if(a==='enter'&&digits.length===maxLen){ checkPIN(); }
+  });
+
+  render();
+})();
+</script>
+
+<script>
+document.getElementById("beginButton").addEventListener("click", async function() {
+  const btn = this;
+  btn.disabled = true;
+  btn.style.pointerEvents = "none";
+  btn.style.opacity = "0";
+  btn.style.transition = "opacity 0.8s ease";
+  setTimeout(() => btn.remove(), 900);
+
+  // pastikan semua audio sudah siap dan diizinkan
+  try {
+    await readySound.play(); readySound.pause(); readySound.currentTime = 0;
+    await goSound.play(); goSound.pause(); goSound.currentTime = 0;
+    await fireworkMusic.play(); fireworkMusic.pause(); fireworkMusic.currentTime = 0;
+  } catch (e) {
+    console.warn("Autoplay unlock fail:", e);
+  }
+
+  // jalankan urutan utama
+  startSequence();
+});
+</script>
+
+  <!-- Scorpio logo image (same as original) -->
+  <img src="https://s12.gifyu.com/images/b3bZv.png" class="logo" id="scorpioLogo" alt="Scorpio Logo" />
+
+  <!-- SVG path (same as original) -->
+  <svg id="heartSVG" width="600" height="560" viewBox="0 0 600 560" style="position:absolute; left:-9999px; top:-9999px;">
+    <path id="heartPath" d="M180 120 
+      C180 100, 200 80, 220 80 
+      L260 80 
+      C300 80, 300 140, 300 180 
+      L300 380 
+      C300 400, 320 420, 340 420 
+      L340 180 
+      C340 140, 360 100, 400 100 
+      L420 100 
+      C460 100, 460 160, 460 200 
+      L460 380 
+      C460 400, 480 420, 500 420 
+      C520 420, 540 400, 540 380 
+      L540 360 
+      M540 360 L560 400 
+      M560 400 L580 360" fill="none" stroke="none"></path>
+  </svg>
+ <div id="transmission">
+  <section class="mast">
+    <header class="mast__header">
+      <h1 class="mast__title js-spanize">November Skies</h1>
+      <hr class="sep"/>
+      <div class="mast__text" id="text-block">
+        <p class="js-line">Today, I send all my best prayers for you to the skies.</p>
+        <p class="js-line">May the things that bring you down also become reasons for your growth.</p>
+        <p class="js-line">May the world always protect you wherever you are.</p>
+        <p class="js-line">May your days be accompanied by boundless love,</p>
+        <p class="js-line">
+  And may the smiles of your parent, which you have always strived for,
+  <span class="nobreak-text">Now be fulfilled.</span>
+</p>
+        </p>
+      </div>
+    </header>
+
+    <div id="jTan" class="mast__signature-text">J.Tan</div>
+
+  </section>
+</div>
+
+  <!-- Spiral Scene (lanjutan setelah Scorpio) -->
+  <div id="spiral" class="spiral"></div>
+  <div id="spiral2" class="spiral"></div>
+
+  <!-- We'll load Three.js & GSAP only when starting Scorpio to preserve "identical" behavior -->
+  <script>
+  /* ================= AUDIO & FLAGS ================= */
+  const READY_VOLUME = 0.8, GO_VOLUME = 0.5, BGM_VOLUME = 0.72;
+  const readySound = document.getElementById('readySound');
+  const goSound = document.getElementById('goSound');
+  const fireworkMusic = document.getElementById('fireworkMusic');
+  readySound.volume = READY_VOLUME;
+  goSound.volume = GO_VOLUME;
+  fireworkMusic.volume = BGM_VOLUME;
+
+  // soundEnabled controls whether click/pop synths play (true during fireworks, set to false at transition)
+  let soundEnabled = true;
+
+  /* simple synth click/pop kept for fireworks */
+  let audioCtx = null;
+  function ensureAudioCtx(){
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  function playClick(){
+    if (!soundEnabled) return;
+    try{
+      ensureAudioCtx();
+      const t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(880,t);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(0.15,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001,t+0.15);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t); o.stop(t+0.16);
+    }catch(e){}
+  }
+  function playPop(){
+    if (!soundEnabled) return;
+    try{
+      ensureAudioCtx();
+      const t = audioCtx.currentTime;
+      const bufferSize = audioCtx.sampleRate * 0.18;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1)*(1 - i / bufferSize);
+      const src = audioCtx.createBufferSource();
+      src.buffer = buffer;
+      const bp = audioCtx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = 1200;
+      const g = audioCtx.createGain(); g.gain.value = 0.7;
+      src.connect(bp); bp.connect(g); g.connect(audioCtx.destination);
+      src.start(t); src.stop(t+0.18);
+    }catch(e){}
+  }
+
+  /* ================= SEQUENCE: READY -> COUNTDOWN -> GO -> FIREWORKS -> TRANSITION ================= */
+  const readyText = document.getElementById('readyText');
+  const goText = document.getElementById('goText');
+  const box = document.getElementById('num');
+  const countdownContainer = document.getElementById('countdown-container');
+  const fadeOverlay = document.getElementById('fadeOverlay');
+  const canvas = document.getElementById('birthday');
+  const bdayCanvas = document.getElementById('c');
+  const wish = document.getElementById('wish');
+  const scorpioLogo = document.getElementById('scorpioLogo');
+
+  function startSequence(){
+  readyText.classList.add('show');
+  readySound.play().catch(()=>{});
+  setTimeout(()=>{
+    readyText.classList.remove('show');
+    // kasih waktu 400ms buat fade-nya beres dulu
+    setTimeout(()=> startCountdown(), 400);
+  }, 2500);
+}
+
+  function startCountdown(){
+    countdownContainer.style.display = "flex";
+    let count = 3;
+    const timer = setInterval(()=>{
+      box.classList.add('flipping');
+      playClick();
+      setTimeout(()=>{
+        count--;
+        box.textContent = count;
+        box.classList.remove('flipping');
+        if (count === 0){
+          clearInterval(timer);
+          setTimeout(()=> startGoPhase(), 600);
+        }
+      },350);
+    },1000);
+  }
+  function startGoPhase(){
+    countdownContainer.style.transition = "opacity 0.8s ease";
+    countdownContainer.style.opacity = "0";
+    setTimeout(()=>{
+      countdownContainer.style.display = "none";
+      goText.classList.add('show');
+      goSound.play().catch(()=>{});
+      setTimeout(()=>{ goText.classList.remove('show'); startFadeTransition(); }, 2000);
+    },500);
+  }
+
+  const fireworkMusicOffsetMs = 800; // when to start music relative to fade
+  const fireworkMusicFadeInMs = 800;
+
+  function startFireworkMusicWithOffset() {
+  try { fireworkMusic.currentTime = 0; } catch (e) {}
+  fireworkMusic.volume = 0; // mulai dari 0 biar gak nyentak
+  fireworkMusic.play().catch(() => {});
+  gsap.to(fireworkMusic, { volume: 0.72, duration: 2, ease: "sine.inOut" }); // fade halus ke 0.72
+}
+
+  function startFadeTransition(){
+    fadeOverlay.style.opacity = "1";
+    setTimeout(()=> startFireworkMusicWithOffset(), Math.max(0, fireworkMusicOffsetMs));
+    setTimeout(()=>{
+      // start fireworks & balloon
+      startFireworks();
+      startBalloonEffect();
+      fadeOverlay.style.opacity = "0";
+      // schedule final transition (adjustable)
+      setTimeout(()=> triggerScorpioTransition(), 34500); // 8s after fireworks start
+    }, 1300);
+  }
+
+  /* ================= FIREWORKS (2D) ================= */
+  const PI2 = Math.PI*2;
+  const rint = (min,max) => Math.floor(Math.random()*(max-min+1))+min;
+  const timestamp = _ => new Date().getTime();
+
+  class Birthday {
+    constructor(){
+      this.resize();
+      this.fireworks = [];
+      this.counter = 0;
+      this.running = true;
+    }
+    resize(){
+      this.width = canvas.width = window.innerWidth;
+      let center = this.width/2|0;
+      this.spawnA = center - center/4 | 0;
+      this.spawnB = center + center/4 | 0;
+      this.height = canvas.height = window.innerHeight;
+      this.spawnC = this.height * .1;
+      this.spawnD = this.height * .5;
+    }
+    onClick(evt){
+      let x = evt.clientX || (evt.touches && evt.touches[0].pageX);
+      let y = evt.clientY || (evt.touches && evt.touches[0].pageY);
+      let count = rint(3,5);
+      for (let i=0;i<count;i++){
+        this.fireworks.push(new Firework(rint(this.spawnA,this.spawnB), this.height, x, y, rint(0,260), rint(30,110)));
+      }
+      this.counter = -1;
+      playPop();
+    }
+    update(delta){
+      if (!this.running) return;
+      ctx.globalCompositeOperation = 'hard-light';
+      ctx.fillStyle = `rgba(20,20,20,${7 * delta})`;
+      ctx.fillRect(0,0,this.width,this.height);
+      ctx.globalCompositeOperation = 'lighter';
+      for (let f of this.fireworks) f.update(delta);
+      this.counter += delta * 3;
+      if (this.counter >= 1){
+        this.fireworks.push(new Firework(rint(this.spawnA,this.spawnB), this.height, Math.random()*this.width, rint(this.spawnC,this.spawnD), rint(0,360), rint(30,110)));
+        this.counter = 0;
+        if (Math.random() < 0.4) playPop();
+      }
+      if (this.fireworks.length > 1000) this.fireworks = this.fireworks.filter(f => !f.dead);
+    }
+  }
+
+  class Firework {
+    constructor(x,y,targetX,targetY,shade,offsprings){
+      this.dead = false;
+      this.offsprings = offsprings;
+      this.x = x; this.y = y; this.targetX = targetX; this.targetY = targetY; this.shade = shade; this.history = [];
+    }
+    update(delta){
+      if (this.dead) return;
+      let xDiff = this.targetX - this.x;
+      let yDiff = this.targetY - this.y;
+      if (Math.abs(xDiff) > 3 || Math.abs(yDiff) > 3){
+        this.x += xDiff * 2 * delta;
+        this.y += yDiff * 2 * delta;
+        this.history.push({x:this.x,y:this.y});
+        if (this.history.length > 20) this.history.shift();
+      } else {
+        if (this.offsprings && !this.madeChilds){
+          let babies = this.offsprings / 2;
+          for (let i=0;i<babies;i++){
+            let tx = this.x + this.offsprings * Math.cos(PI2 * i / babies) | 0;
+            let ty = this.y + this.offsprings * Math.sin(PI2 * i / babies) | 0;
+            birthday.fireworks.push(new Firework(this.x,this.y,tx,ty,this.shade,0));
+          }
+          playPop();
+        }
+        this.madeChilds = true;
+        this.history.shift();
+      }
+      if (this.history.length === 0) this.dead = true;
+      else if (this.offsprings){
+        for (let i=0;i<this.history.length;i++){
+          let point = this.history[i];
+          ctx.beginPath();
+          ctx.fillStyle = 'hsl(' + this.shade + ',100%,' + i + '%)';
+          ctx.arc(point.x, point.y, 1, 0, PI2, false);
+          ctx.fill();
+        }
+      } else {
+        ctx.beginPath();
+        ctx.fillStyle = 'hsl(' + this.shade + ',100%,50%)';
+        ctx.arc(this.x, this.y, 1, 0, PI2, false);
+        ctx.fill();
+      }
+    }
+  }
+
+  let ctx, birthday;
+  function startFireworks(){
+    canvas.style.display = 'block';
+    ctx = canvas.getContext('2d');
+    birthday = new Birthday();
+    let then = timestamp();
+    window.onresize = ()=> birthday.resize();
+    document.onclick = evt => birthday.onClick(evt);
+    document.ontouchstart = evt => birthday.onClick(evt);
+    (function loop(){
+      requestAnimationFrame(loop);
+      let now = timestamp();
+      let delta = now - then;
+      then = now;
+      birthday.update(delta / 1000);
+    })();
+  }
+
+  /* ================= BALLOON / TEXT EFFECT (transparent) ================= */
+  function startBalloonEffect(){
+    const c2 = bdayCanvas;
+    c2.style.display = 'block';
+    c2.width = window.innerWidth; c2.height = window.innerHeight;
+    const ctx2 = c2.getContext('2d');
+    c2.style.pointerEvents = 'none';
+    const opts = {
+      strings: [ 'HAPPY', 'BIRTHDAY!' ],
+      charSize: 30, charSpacing: 35, lineHeight: 40,
+      fireworkPrevPoints: 10, fireworkBaseLineWidth: 5, fireworkAddedLineWidth: 8,
+      fireworkSpawnTime: 200, fireworkBaseReachTime: 30, fireworkAddedReachTime: 30,
+      fireworkCircleBaseSize: 20, fireworkCircleAddedSize: 10,
+      fireworkCircleBaseTime: 30, fireworkCircleAddedTime: 30,
+      fireworkCircleFadeBaseTime: 10, fireworkCircleFadeAddedTime: 5,
+      fireworkBaseShards: 5, fireworkAddedShards: 5, fireworkShardPrevPoints: 3,
+      fireworkShardBaseVel: 4, fireworkShardAddedVel: 2, fireworkShardBaseSize: 3, fireworkShardAddedSize: 3,
+      gravity: .1, upFlow: -.1, letterContemplatingWaitTime: 360,
+      balloonSpawnTime: 20, balloonBaseInflateTime: 10, balloonAddedInflateTime: 10,
+      balloonBaseSize: 20, balloonAddedSize: 20, balloonBaseVel: .4, balloonAddedVel: .4,
+      balloonBaseRadian: -( Math.PI / 2 - .5 ), balloonAddedRadian: -1,
+    };
+    let w = c2.width, h = c2.height, hw = w/2, hh = h/2;
+    const Tau = Math.PI*2, TauQuarter = Tau/4;
+    const calcTotal = opts.charSpacing * Math.max(opts.strings[0].length, opts.strings[1].length);
+    ctx2.font = opts.charSize + 'px Verdana';
+
+    function Letter2(char,x,y){
+      this.char = char; this.x=x; this.y=y;
+      this.dx = -ctx2.measureText(char).width/2; this.dy = +opts.charSize/2;
+      this.fireworkDy = this.y - hh;
+      var hue = x / calcTotal * 360;
+      this.color = 'hsl(hue,80%,50%)'.replace('hue', hue);
+      this.lightAlphaColor = 'hsla(hue,80%,light%,alp)'.replace('hue', hue);
+      this.lightColor = 'hsl(hue,80%,light%)'.replace('hue', hue);
+      this.alphaColor = 'hsla(hue,80%,50%,alp)'.replace('hue', hue);
+      this.reset();
+    }
+    Letter2.prototype.reset = function(){
+      this.phase='firework'; this.tick=0; this.spawned=false;
+      this.spawningTime = opts.fireworkSpawnTime * Math.random()|0;
+      this.reachTime = opts.fireworkBaseReachTime + opts.fireworkAddedReachTime * Math.random()|0;
+      this.lineWidth = opts.fireworkBaseLineWidth + opts.fireworkAddedLineWidth * Math.random();
+      this.prevPoints = [[0, hh, 0]];
+    };
+    function Shard2(x,y,vx,vy,color){
+      var vel = opts.fireworkShardBaseVel + opts.fireworkShardAddedVel * Math.random();
+      this.vx = vx * vel; this.vy = vy * vel; this.x=x; this.y=y;
+      this.prevPoints = [[x,y]]; this.color = color; this.alive=true;
+      this.size = opts.fireworkShardBaseSize + opts.fireworkShardAddedSize * Math.random();
+    }
+    Shard2.prototype.step = function(){
+      this.x += this.vx; this.y += this.vy += opts.gravity;
+      if (this.prevPoints.length > opts.fireworkShardPrevPoints) this.prevPoints.shift();
+      this.prevPoints.push([this.x,this.y]);
+      var lineWidthProportion = this.size / this.prevPoints.length;
+      for (var k=0;k<this.prevPoints.length-1;k++){
+        var p=this.prevPoints[k], p2=this.prevPoints[k+1];
+        ctx2.strokeStyle = this.color.replace('alp', k / this.prevPoints.length);
+        ctx2.lineWidth = k * lineWidthProportion;
+        ctx2.beginPath(); ctx2.moveTo(p[0],p[1]); ctx2.lineTo(p2[0],p2[1]); ctx2.stroke();
+      }
+      if (this.prevPoints[0][1] > hh) this.alive = false;
+    };
+
+    function generateBalloonPath2(ctxRef, x, y, size){
+      ctxRef.moveTo(x,y);
+      ctxRef.bezierCurveTo(x - size / 2, y - size / 2, x - size / 4, y - size, x, y - size);
+      ctxRef.bezierCurveTo(x + size / 4, y - size, x + size / 2, y - size / 2, x, y);
+    }
+
+    const letters = [];
+    for (var i=0;i<opts.strings.length;i++){
+      for (var j=0;j<opts.strings[i].length;j++){
+        letters.push(new Letter2(
+          opts.strings[i][j],
+          j * opts.charSpacing + opts.charSpacing/2 - opts.strings[i].length * opts.charSize / 2,
+          i * opts.lineHeight + opts.lineHeight/2 - opts.strings.length * opts.lineHeight/2
+        ));
+      }
+    }
+
+    Letter2.prototype.step = function(){
+      if (this.phase === 'firework'){
+        if (!this.spawned){
+          ++this.tick;
+          if (this.tick >= this.spawningTime){ this.tick = 0; this.spawned = true; }
+        } else {
+          ++this.tick;
+          var linearProportion = this.tick / this.reachTime, armonicProportion = Math.sin(linearProportion * TauQuarter),
+              x = linearProportion * this.x, y = hh + armonicProportion * this.fireworkDy;
+          if (this.prevPoints.length > opts.fireworkPrevPoints) this.prevPoints.shift();
+          this.prevPoints.push([x,y,linearProportion * this.lineWidth]);
+          var lineWidthProportion = 1 / (this.prevPoints.length - 1);
+          for (var i=1;i<this.prevPoints.length;i++){
+            var point = this.prevPoints[i], point2 = this.prevPoints[i-1];
+            ctx2.strokeStyle = this.alphaColor.replace('alp', i / this.prevPoints.length);
+            ctx2.lineWidth = point[2] * lineWidthProportion * i;
+            ctx2.beginPath(); ctx2.moveTo(point[0], point[1]); ctx2.lineTo(point2[0], point2[1]); ctx2.stroke();
+          }
+          if (this.tick >= this.reachTime){
+            this.phase = 'contemplate';
+            this.circleFinalSize = opts.fireworkCircleBaseSize + opts.fireworkCircleAddedSize * Math.random();
+            this.circleCompleteTime = opts.fireworkCircleBaseTime + opts.fireworkCircleAddedTime * Math.random()|0;
+            this.circleCreating = true; this.circleFading = false; this.circleFadeTime = opts.fireworkCircleFadeBaseTime + opts.fireworkCircleFadeAddedTime * Math.random()|0;
+            this.tick = 0; this.tick2 = 0; this.shards = [];
+            var shardCount = opts.fireworkBaseShards + opts.fireworkAddedShards * Math.random()|0, angle = Tau / shardCount, cos = Math.cos(angle), sin = Math.sin(angle), rx = 1, ry = 0;
+            for (var s=0;s<shardCount;++s){
+              var rx1 = rx; rx = rx * cos - ry * sin; ry = ry * cos + rx1 * sin;
+              this.shards.push(new Shard2(this.x, this.y, rx, ry, this.alphaColor));
+            }
+          }
+        }
+      } else if (this.phase === 'contemplate'){
+        ++this.tick;
+        if (this.circleCreating){
+          ++this.tick2;
+          var proportion = this.tick2 / this.circleCompleteTime, armonic = -Math.cos(proportion * Math.PI) / 2 + .5;
+          ctx2.beginPath();
+          ctx2.fillStyle = this.lightAlphaColor.replace('light', 50 + 50 * proportion).replace('alp', proportion);
+          ctx2.beginPath(); ctx2.arc(this.x, this.y, armonic * this.circleFinalSize, 0, Tau); ctx2.fill();
+          if (this.tick2 > this.circleCompleteTime){ this.tick2 = 0; this.circleCreating = false; this.circleFading = true; }
+        } else if (this.circleFading){
+          ctx2.fillStyle = this.lightColor.replace('light', 70);
+          ctx2.fillText(this.char, this.x + this.dx, this.y + this.dy);
+          ++this.tick2;
+          var proportion2 = this.tick2 / this.circleFadeTime, armonic2 = -Math.cos(proportion2 * Math.PI) / 2 + .5;
+          ctx2.beginPath();
+          ctx2.fillStyle = this.lightAlphaColor.replace('light', 100).replace('alp', 1 - armonic2);
+          ctx2.arc(this.x, this.y, this.circleFinalSize, 0, Tau); ctx2.fill();
+          if (this.tick2 >= this.circleFadeTime) this.circleFading = false;
+        } else {
+          ctx2.fillStyle = this.lightColor.replace('light', 70);
+          ctx2.fillText(this.char, this.x + this.dx, this.y + this.dy);
+        }
+        for (var si=0; si<this.shards.length; ++si){
+          this.shards[si].step();
+          if (!this.shards[si].alive){ this.shards.splice(si,1); --si; }
+        }
+        if (this.tick > opts.letterContemplatingWaitTime){
+          this.phase = 'balloon'; this.tick = 0; this.spawning = true; this.spawnTime = opts.balloonSpawnTime * Math.random()|0;
+          this.inflating = false; this.inflateTime = opts.balloonBaseInflateTime + opts.balloonAddedInflateTime * Math.random()|0;
+          this.size = opts.balloonBaseSize + opts.balloonAddedSize * Math.random()|0;
+          var rad = opts.balloonBaseRadian + opts.balloonAddedRadian * Math.random();
+          var vel = opts.balloonBaseVel + opts.balloonAddedVel * Math.random();
+          this.vx = Math.cos(rad) * vel; this.vy = Math.sin(rad) * vel;
+        }
+      } else if (this.phase === 'balloon'){
+        ctx2.strokeStyle = this.lightColor.replace('light', 80);
+        if (this.spawning){
+          ++this.tick; ctx2.fillStyle = this.lightColor.replace('light', 70);
+          ctx2.fillText(this.char, this.x + this.dx, this.y + this.dy);
+          if (this.tick >= this.spawnTime){ this.tick = 0; this.spawning = false; this.inflating = true; }
+        } else if (this.inflating){
+          ++this.tick;
+          var proportion3 = this.tick / this.inflateTime;
+          var x = this.cx = this.x; var y = this.cy = this.y - this.size * proportion3;
+          ctx2.fillStyle = this.alphaColor.replace('alp', proportion3); ctx2.beginPath();
+          generateBalloonPath2(ctx2, x, y, this.size * proportion3); ctx2.fill();
+          ctx2.beginPath(); ctx2.moveTo(x,y); ctx2.lineTo(x,this.y); ctx2.stroke();
+          ctx2.fillStyle = this.lightColor.replace('light', 70);
+          ctx2.fillText(this.char, this.x + this.dx, this.y + this.dy);
+          if (this.tick >= this.inflateTime){ this.tick = 0; this.inflating = false; }
+        } else {
+          this.cx += this.vx; this.cy += this.vy += opts.upFlow;
+          ctx2.fillStyle = this.color; ctx2.beginPath(); generateBalloonPath2(ctx2, this.cx, this.cy, this.size); ctx2.fill();
+          ctx2.beginPath(); ctx2.moveTo(this.cx, this.cy); ctx2.lineTo(this.cx, this.cy + this.size); ctx2.stroke();
+          ctx2.fillStyle = this.lightColor.replace('light', 70);
+          ctx2.fillText(this.char, this.cx + this.dx, this.cy + this.dy + this.size);
+          if (this.cy + this.size < -hh || this.cx < -hw || this.cy > hw) this.phase = 'done';
+        }
+      }
+    };
+
+  // 🎂 Kue muncul tiap kali teks "HAPPY BIRTHDAY!" muncul
+const cake = document.getElementById('cakeWrapper');
+cake.style.display = 'block';
+cake.style.opacity = 0;
+
+let cycleCount = 0;
+const MAX_CYCLE = 3;
+
+async function playCakePerCycle() {
+  for (cycleCount = 1; cycleCount <= MAX_CYCLE; cycleCount++) {
+    // 🎉 Muncul pelan-pelan
+    await new Promise(r => setTimeout(r, 2000));
+    cake.animate(
+      [
+        { opacity: 0, transform: 'translate(0, -45%) scale(0.6)' },
+        { opacity: 1, transform: 'translate(0, -45%) scale(0.8)' }
+      ],
+      { duration: 800, easing: 'ease-out', fill: 'forwards' }
+    );
+
+    // 🕯️ Naik dan hilang
+    await new Promise(r => setTimeout(r, 8800 - 2000)); // jeda 6.8 detik
+    cake.animate(
+      [
+        { transform: 'translate(0, -45%) scale(0.8)', opacity: 1 },
+        { transform: 'translate(0, -250px) scale(0.6)', opacity: 0 }
+      ],
+      { duration: 1800, easing: 'ease-in-out', fill: 'forwards' }
+    );
+
+    // ⏳ Tunggu sampai animasi selesai dulu baru lanjut ke siklus berikutnya
+    await new Promise(r => setTimeout(r, 3000));
+  }
+}
+
+// 🚀 Jalankan loop kue
+playCakePerCycle();
+
+    function anim2(){
+      requestAnimationFrame(anim2);
+      ctx2.clearRect(0,0,w,h);
+      ctx2.save();
+      ctx2.translate(hw, hh);
+      let done = true;
+      for (let i=0;i<letters.length;i++){
+        letters[i].step();
+        if (letters[i].phase !== 'done') done = false;
+      }
+      ctx2.restore();
+      if (done){
+        for (let j=0;j<letters.length;j++) letters[j].reset();
+      }
+    }
+    anim2();
+    window.addEventListener('resize', function(){
+      w = c2.width = window.innerWidth; h = c2.height = window.innerHeight; hw = w/2; hh = h/2;
+      ctx2.font = opts.charSize + 'px Verdana';
+    });
+  }
+
+  /* ================= TRANSITION to SCORPIO ================= */
+  // We'll load Three.js and GSAP dynamically when running Scorpio to avoid double-init and to keep original Scorpio behavior identical.
+  // When triggerScorpioTransition() called:
+  // - play a big explosion (visual + sound)
+  // - disable sound effects (soundEnabled = false)
+  // - stop the fireworks loop (birthday.running = false)
+  // - fade out 2D canvases
+  // - load three.js + scorpio code and start it (identical to your original code)
+
+  let threeLoaded = false;
+
+  // helper to load external script dynamically (returns Promise)
+  function loadScript(url){
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = url;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('Failed to load ' + url));
+      document.head.appendChild(s);
+    });
+  }
+
+  function triggerScorpioTransition(){
+  // ambil snapshot partikel terakhir dari fireworks sebagai dasar transisi
+  const burstPositions = [];
+  const cx = window.innerWidth/2, cy = window.innerHeight/2;
+  for (let i = 0; i < 250; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const r = Math.pow(Math.random(), 0.5) * 320;
+    burstPositions.push({
+      x: cx + Math.cos(angle) * r,
+      y: cy + Math.sin(angle) * r
+    });
+  }
+
+  // efek ledakan halus (bukan keras)
+  soundEnabled = false;
+  if (birthday) birthday.running = false;
+
+  // lembutkan canvas fade (tidak langsung hilang)
+  gsap.to(canvas, { opacity: 0.4, duration: 0.8, ease: "power2.inOut" });
+  gsap.to(bdayCanvas, { opacity: 0.4, duration: 0.8, ease: "power2.inOut" });
+
+  // mulai Scorpio tanpa jeda kasar, biar nyatu
+setTimeout(() => {
+
+  // 🔮 Particle Morph Glow 🔮
+  const glow = document.createElement("div");
+  glow.style.position = "fixed";
+  glow.style.inset = "0";
+  glow.style.background =
+    "radial-gradient(circle at center, rgba(180,120,255,0.35), rgba(120,80,200,0.15) 40%, transparent 80%)";
+  glow.style.opacity = "0";
+  glow.style.zIndex = "9998";
+  glow.style.pointerEvents = "none";
+  glow.style.filter = "blur(30px)";
+  document.body.appendChild(glow);
+
+  // animasi cahaya violet muncul lalu memudar
+  gsap.to(glow, { opacity: 0.8, duration: 0.6, ease: "power2.out" });
+  gsap.to(glow, {
+    opacity: 0,
+    duration: 1.0,
+    delay: 1.0,
+    ease: "power1.inOut",
+    onComplete: () => glow.remove()
+  });
+
+  // lanjut ke Scorpio
+  initScorpioFromOriginal(burstPositions);
+
+  // setelah Scorpio aktif, fade lembut canvas lama
+  gsap.to(canvas, { opacity: 0, duration: 1.5, delay: 1.2 });
+  gsap.to(bdayCanvas, { opacity: 0, duration: 1.5, delay: 1.2 });
+}, 300); // sedikit overlap biar terasa “nyatu”
+
+    // play a stronger "big explosion" sound using pop plus oscillator
+    try{
+      ensureAudioCtx();
+      // quick low rumble
+      const t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(120, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.4, t+0.06);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+1.2);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t); o.stop(t+1.2);
+      // a loud pop
+      playPop();
+    }catch(e){}
+
+    // 2) disable sound effects for future
+    soundEnabled = false;
+
+    // 3) stop fireworks generating new ones
+    if (birthday) birthday.running = false;
+
+    // 4) fade out the 2D canvases but keep the burst visible for a short moment
+    gsap.to(canvas, { opacity: 0, duration: 1.2, ease: "power2.inOut", onComplete: ()=> { canvas.style.display = 'none'; }});
+    gsap.to(bdayCanvas, { opacity: 0, duration: 1.2, ease: "power2.inOut", onComplete: ()=> { bdayCanvas.style.display = 'none'; }});
+
+    // 6) after a short delay, initialize Scorpio (Three.js) and morph particles
+    setTimeout(()=> {
+      initScorpioFromOriginal(burstPositions);
+    }, 900);
+  }
+
+  /* =================== SCORPIO: load Three.js + GSAP then run original code with small adapt =================== */
+  // We'll dynamically load three & gsap if not already loaded.
+  // initScorpioFromOriginal(burstPositions) will run the exact behavior from your original scorpio file.
+  async function initScorpioFromOriginal(initialBurstPositions){
+    // dynamic load
+    if (!window.THREE){
+      await loadScript('https://unpkg.com/three@0.155.0/build/three.min.js');
+    }
+    if (!window.gsap){
+      await loadScript('https://unpkg.com/gsap@3.12.2/dist/gsap.min.js');
+    }
+
+    // Create three renderer same as original, but only now
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 5000);
+    camera.position.set(0, 0, 600);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(devicePixelRatio > 1 ? 2 : 1);
+renderer.domElement.style.position = 'absolute';
+renderer.domElement.style.top = '0';
+renderer.domElement.style.left = '0';
+renderer.domElement.style.zIndex = 6;
+renderer.domElement.style.pointerEvents = 'none';
+document.body.appendChild(renderer.domElement);
+
+// agar background CSS kelihatan (transparan)
+renderer.setClearColor(0x000000, 0);
+
+// ubah background hanya saat Scorpio aktif
+document.body.style.background =
+  "radial-gradient(circle at 30% 20%, #0b0b24 0%, #02010a 60%)";
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+
+    /* BACKGROUND STARS (same logic) */
+    const bgCount = 400;
+    const bgPositions = new Float32Array(bgCount * 3);
+    for (let i = 0; i < bgCount; i++) {
+      bgPositions[i * 3] = (Math.random() - 0.5) * 2000;
+      bgPositions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+      bgPositions[i * 3 + 2] = -500 + Math.random() * 800;
+    }
+    const bgGeom = new THREE.BufferGeometry();
+    bgGeom.setAttribute("position", new THREE.BufferAttribute(bgPositions, 3));
+    const bgMat = new THREE.PointsMaterial({
+      size: 1.4, color: 0xffffff, opacity: 0.6, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
+    });
+    const bgStars = new THREE.Points(bgGeom, bgMat);
+    scene.add(bgStars);
+    // twinkle
+    gsap.to(bgMat, { opacity: Math.random() * 0.5 + 0.4, duration: 2 + Math.random() * 2, yoyo:true, repeat:-1, ease:"sine.inOut" });
+
+    /* GLOW */
+    const glowGeo = new THREE.CircleGeometry(260,64);
+    const glowMat = new THREE.MeshBasicMaterial({ color: 0xff8acb, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending });
+    const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+    glowMesh.rotation.x = Math.PI * -0.5;
+    glowMesh.position.z = -20;
+    scene.add(glowMesh);
+    gsap.to(glowMesh.scale, { x:1.05, y:1.05, duration:4, yoyo:true, repeat:-1, ease:"sine.inOut" });
+
+    /* Build targets from SVG path (same mapping as original) */
+    const pathEl = document.getElementById("heartPath");
+    const pathLen = pathEl.getTotalLength();
+    const targets = [];
+    for (let i = 0; i < pathLen; i += 0.6) {
+      const p = pathEl.getPointAtLength(i);
+      targets.push(new THREE.Vector3(p.x - 350, -(p.y - 265), (Math.random() - 0.5) * 60));
+    }
+    const count = targets.length;
+
+    /* Create particles geometry using initialBurstPositions -> map to world coordinates similar to original mapping */
+    const geom = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      // use available initial positions if present, otherwise random
+      const bp = initialBurstPositions[i % initialBurstPositions.length];
+      const worldX = (bp.x - window.innerWidth/2);
+      const worldY = - (bp.y - window.innerHeight/2);
+      const worldZ = (Math.random()-0.5) * 60;
+      positions[i*3] = worldX;
+      positions[i*3+1] = worldY;
+      positions[i*3+2] = worldZ;
+    }
+    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+    const mat = new THREE.PointsMaterial({
+      size: 2.8,
+      color: new THREE.Color(0xff7fbf),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.6,
+      depthWrite: false,
+    });
+
+    const points = new THREE.Points(geom, mat);
+    scene.add(points);
+
+    /* current positions array to tween (mimic original 'current' array) */
+    const current = [];
+    for (let i = 0; i < count; i++) {
+      current.push({
+        x: positions[i*3],
+        y: positions[i*3+1],
+        z: positions[i*3+2],
+      });
+    }
+
+    /* ANIMASI: move current then to targets (replicate original timeline) */
+    const tl = gsap.timeline();
+    const logo = document.getElementById('scorpioLogo');
+    gsap.set(logo, { opacity: 0 });
+
+    for (let i = 0; i < count; i++) {
+      const c = current[i];
+      tl.to(c, { x: c.x * 3, y: c.y * 3, z: c.z * 3, duration: 0.6, ease: "power4.out" }, 0);
+    }
+    for (let i = 0; i < count; i++) {
+      const t = targets[i];
+      const delay = 0.5 + Math.random() * 0.5;
+      tl.to(current[i], { x: t.x, y: t.y, z: t.z, duration: 1.6 + Math.random() * 0.8, ease: "power3.out" }, delay);
+    }
+    tl.to(logo, { opacity: 1, duration: 1.2, ease: "power2.inOut" }, 0.5);
+
+    tl.add(() => {
+      gsap.to(mat, { opacity: 0.6, duration: 1.8, yoyo: true, repeat: -1, ease: "sine.inOut" });
+      gsap.to(points.scale, { x: 1.03, y: 1.03, z: 1.03, duration: 1.8, yoyo: true, repeat: -1, ease: "sine.inOut" });
+      gsap.to(mat.color, { r: 0.7, g: 0.5, b: 1.0, duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    });
+
+    /* floatParticles (replicate original function using current array) */
+    function floatParticles(){
+      const i = Math.floor(Math.random() * count);
+      gsap.to(current[i], {
+        x: current[i].x + (Math.random()-0.5)*20,
+        y: current[i].y + (Math.random()-0.5)*20,
+        z: current[i].z + (Math.random()-0.5)*20,
+        duration: 2 + Math.random()*2,
+        yoyo: true,
+        repeat: 1,
+        ease: "sine.inOut",
+        onComplete: floatParticles
+      });
+    }
+    for (let i=0;i<20;i++) floatParticles();
+
+    /* camera movement & logo pulse */
+    gsap.to(camera.position, { z: 580, duration: 5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+    gsap.to(logo, { scale: 1.05, duration: 2.8, yoyo: true, repeat: -1, ease: "sine.inOut", transformOrigin: "center center" });
+    gsap.to(logo, { filter: "hue-rotate(360deg) saturate(1.8)", duration: 8, repeat: -1, yoyo: true, ease: "sine.inOut" });
+
+    /* shooting meteors (original) */
+    const meteorCount = 8;
+    const meteors = [];
+    for (let i = 0; i < meteorCount; i++){
+      const geo = new THREE.BufferGeometry();
+      const vertices = new Float32Array([0,0,0,-20,-10,0,-40,-20,0]);
+      geo.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+      const matLine = new THREE.LineBasicMaterial({ color: new THREE.Color(0xfff6da), transparent:true, opacity:0.8, blending:THREE.AdditiveBlending });
+      const meteor = new THREE.Line(geo, matLine);
+      meteor.position.set(Math.random()*800 - 400, Math.random()*400 + 200, Math.random()*-200);
+      meteor.rotation.z = Math.random() * 0.5 - 0.25;
+      scene.add(meteor);
+      meteors.push(meteor);
+    }
+    function animateMeteors(){
+      meteors.forEach((m)=>{
+        m.position.x -= 10; m.position.y -= 6; m.material.opacity -= 0.02;
+        if (m.position.y < -300 || m.material.opacity <= 0){
+          m.position.set(Math.random()*800 - 400, Math.random()*400 + 200, Math.random()*-200);
+          m.material.opacity = 0.8;
+        }
+      });
+    }
+
+    /* Render loop: update points position from 'current' array to buffer every frame */
+    function render(){
+      requestAnimationFrame(render);
+      const arr = geom.attributes.position.array;
+      for (let i=0;i<count;i++){
+        arr[i*3] = current[i].x;
+        arr[i*3+1] = current[i].y;
+        arr[i*3+2] = current[i].z;
+      }
+      geom.attributes.position.needsUpdate = true;
+      bgStars.rotation.y += 0.0001;
+      animateMeteors();
+      renderer.render(scene, camera);
+    }
+    render();
+
+    window.addEventListener('resize', ()=>{
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    // setelah 12 detik Scorpio berjalan, lanjut ke Incoming Transmission
+    setTimeout(() => {
+  startTransmissionScene();
+}, 12000);
+  }
+
+  /* ================= INCOMING TRANSMISSION SCENE ================= */
+function startTransmissionScene() {
+  const t = document.getElementById('transmission');
+  t.style.display = 'flex';
+  gsap.to(t, { opacity: 1, duration: 2, ease: "power2.inOut" });
+
+  // Tambahkan bingkai neon setelah sedikit delay
+  setTimeout(() => t.classList.add('show-frame'), 800);
+
+  // 🌌 Efek huruf per huruf mirip "November Skies" original
+  setTimeout(() => {
+   const lines = t.querySelectorAll('h1, p');
+  lines.forEach(line => line.style.opacity = 1); // 🔸 tambahan baru
+  let delay = 0;
+
+  // munculkan elemen dulu pelan-pelan biar gak kelihatan bayangan awal
+  gsap.to(lines, { opacity: 1, duration: 0.5, delay: 0.3 });
+
+  lines.forEach(line => {
+    const text = line.textContent;
+    line.innerHTML = '';
+    for (const char of text) {
+      const span = document.createElement('span');
+      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.style.animation = 'letterGlow 0.6s ease forwards';
+      span.style.animationDelay = `${delay}s`;
+      line.appendChild(span);
+      delay += 0.09;
+    }
+    delay += 0.6;
+  });
+
+// —— Tambahan animasi per huruf untuk "J.Tan" —— 
+const jTanEl = document.getElementById('jTan');
+if (jTanEl) {
+  const jText = jTanEl.textContent.trim();
+  jTanEl.textContent = '';
+
+  // 🔹 Sembunyikan elemen dulu sampai waktunya muncul
+  jTanEl.style.opacity = 0;
+  jTanEl.style.visibility = 'hidden';
+
+  // 🔹 Gunakan delay terakhir langsung (tanpa jeda tambahan)
+  setTimeout(() => {
+    jTanEl.style.visibility = 'visible';
+    gsap.to(jTanEl, { opacity: 1, duration: 0.4, ease: "sine.inOut" });
+
+    // 🔹 Ketik huruf per huruf langsung setelah huruf terakhir kalimat utama
+    let subDelay = 0;
+    for (const ch of jText) {
+      const span = document.createElement('span');
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      span.style.animation = 'letterGlow 0.6s ease forwards';
+      span.style.animationDelay = `${subDelay}s`;
+      jTanEl.appendChild(span);
+      subDelay += 0.09;
+    }
+  }, (delay * 1000) - 150); // ⏱️ mulai 0.15s lebih cepat, nyatu langsung pas huruf terakhir muncul
+}
+// —— selesai animasi J.Tan —— 
+}, 1600);
+
+  // 🔥 Hilangkan logo Scorpio & canvas pelan-pelan
+  gsap.to('#scorpioLogo', { opacity: 0, duration: 1.2, ease: "power2.inOut" });
+  gsap.to('canvas', { opacity: 0, duration: 1.4, ease: "power2.inOut" });
+
+  // setelah 12 detik, fade out dan lanjut ke Spiral Scene
+setTimeout(() => {
+   gsap.to(t, {
+    opacity: 0,
+    duration: 2.2,
+    ease: "sine.inOut",
+    onComplete: () => {
+      // Begitu fade-out selesai, langsung sembunyikan total
+      t.style.display = "none";
+    }
+  });
+
+  // Mulai scene berikut sedikit sebelum fade benar-benar habis
+  setTimeout(() => {
+    startSpiralScene();
+  }, 1100); // overlap ringan biar transisi halus
+}, 40000);
+}
+
+/* ================= SPIRAL SCENE ================= */
+function startSpiralScene() {
+  const spiral1 = document.getElementById('spiral');
+  const spiral2 = document.getElementById('spiral2');
+
+  // 🌌 Fade Scorpio canvas & logo slowly
+  gsap.to('#scorpioLogo', { opacity: 0, duration: 2.5, ease: "power2.inOut" });
+  gsap.to('canvas', { opacity: 0, duration: 2.8, ease: "power2.inOut" });
+
+  // 🌈 Smoothly change background
+  gsap.to(document.body, {
+    backgroundColor: "#040509",
+    duration: 3,
+    ease: "sine.inOut"
+  });
+
+// ✨ Munculkan spiral dengan fade lembut
+setTimeout(() => {
+  // 🔹 Bangun dulu spiral diam-diam (belum kelihatan)
+  initSpiralAnimation();
+
+  // 🔹 Tunggu sebentar supaya browser selesai render huruf-huruf
+  setTimeout(() => {
+    gsap.to([spiral1, spiral2], {
+      opacity: 1,
+      duration: 3.2,
+      ease: "sine.inOut"
+    });
+  }, 300); // jeda 0.3 detik biar munculnya mulus banget
+}, 500);
+}
+
+function initSpiralAnimation() {
+  let isFirefox = typeof InstallTrigger !== 'undefined';
+  const words = "Even In Silence I Cared";
+
+  let ANGLE = 360;
+  const ANIMATION_DURATION = 4000;
+
+  const animation = () => {
+    ANGLE -= 1;
+    document.querySelectorAll(".spiral *").forEach((el, i) => {
+      const translateY = Math.sin(ANGLE * (Math.PI / 120)) * 100;
+      const scale = Math.cos(ANGLE * (Math.PI / 120)) * 0.5 + 0.5;
+      const offset = parseInt(el.dataset.offset);
+      const delay = i * (ANIMATION_DURATION / 16) - offset;
+      setTimeout(() => {
+        el.style.transform = `translateY(${translateY}px) scale(${scale})`;
+      }, delay);
+    });
+    requestAnimationFrame(animation);
+  };
+
+  const characters = words.split("").forEach((char, i) => {
+    const createElement = (offset) => {
+      const div = document.createElement("div");
+      div.innerText = char;
+      div.classList.add("character");
+      div.setAttribute("data-offset", offset);
+      div.style.animationDelay = `-${i * (ANIMATION_DURATION / 16) - offset}ms`;
+      return div;
+    };
+    document.querySelector("#spiral").append(createElement(0));
+    document
+      .querySelector("#spiral2")
+      .append(createElement((isFirefox ? 1 : -1) * (ANIMATION_DURATION / 2)));
+  });
+
+  if (isFirefox) {
+    animation();
+  }
+setTimeout(() => startDustEffect(), 500);
+
+}
+
+// 🌫️ Efek Debu Berkilau Halus (versi lembut & tidak ganggu teks)
+function startDustEffect() {
+  const dustCanvas = document.createElement('canvas');
+  dustCanvas.id = 'dustCanvas';
+  dustCanvas.style.position = 'fixed';
+  dustCanvas.style.top = 0;
+  dustCanvas.style.left = 0;
+  dustCanvas.style.width = '100%';
+  dustCanvas.style.height = '100%';
+  dustCanvas.style.pointerEvents = 'none';
+  dustCanvas.style.zIndex = 15; // di bawah spiral teks
+  document.body.appendChild(dustCanvas);
+
+  const ctx = dustCanvas.getContext('2d');
+  let width = (dustCanvas.width = window.innerWidth);
+  let height = (dustCanvas.height = window.innerHeight);
+
+  const numParticles = 60; // lebih sedikit biar halus
+  const particles = Array.from({ length: numParticles }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    r: Math.random() * 0.9 + 0.3, // ukuran lebih kecil
+    vx: (Math.random() - 0.5) * 0.25, // gerakan lebih pelan
+    vy: (Math.random() - 0.5) * 0.25,
+    opacity: Math.random() * 0.3 + 0.1 // lebih transparan
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach((p) => {
+      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 10);
+      gradient.addColorStop(0, `rgba(200, 240, 255, ${p.opacity})`);
+      gradient.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 10, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    update();
+    requestAnimationFrame(draw);
+  }
+
+  function update() {
+    particles.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.opacity += (Math.random() - 0.5) * 0.01;
+      p.opacity = Math.min(0.3, Math.max(0.05, p.opacity));
+      if (p.x < 0 || p.x > width) p.vx *= -1;
+      if (p.y < 0 || p.y > height) p.vy *= -1;
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    width = dustCanvas.width = window.innerWidth;
+    height = dustCanvas.height = window.innerHeight;
+  });
+
+  draw();
+}
+
+/* ================= BOOT ================= */
+// window.onload = ()=> {
+//   // start sequence after small delay so resources load
+//   setTimeout(startSequence, 800);
+// };
+</script>
+
+<!-- GSAP is used in the 2D/transition; we include it upfront to allow the 2D timeline to use gsap -->
+<script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+(function($) {
+  function animateLine($line, delayStart) {
+    const noBreakEl = $line.find(".nobreak-text");
+    const noBreakText = noBreakEl.text() || "";
+    let text = $line.clone().children().remove().end().text().trim();
+    $line.html("");
+    let totalDelay = delayStart;
+    for (let char of text) {
+      const span = $("<span>").text(char === " " ? "\u00A0" : char);
+      span.css("animation-delay", `${totalDelay}s`);
+      $line.append(span);
+      totalDelay += 0.05;
+    }
+    if (noBreakText) {
+      const stable = $("<span>")
+        .addClass("nobreak-text")
+        .text(" " + noBreakText);
+      stable.css("animation-delay", `${totalDelay}s`);
+      $line.append(stable);
+    }
+    return totalDelay + 0.6;
+  }
+
+  window.animateNovemberSkies = function() {
+    let delay = 0;
+    $(".js-line").each(function() {
+      delay = animateLine($(this), delay);
+    });
+  };
+})(jQuery);
+</script>
+
+</body>
+</html>
