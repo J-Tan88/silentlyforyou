@@ -242,6 +242,24 @@ letter-spacing: 1px;
 /* Import font baru */
 @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
 
+/* 📱 Fix teks November Skies agar tidak kepotong di HP */
+@media (max-width: 600px) {
+  .mast {
+    max-width: 95%;      /* biar teks lebih lebar */
+    padding: 2rem 1rem;  /* kurangi ruang kiri–kanan */
+    transform: none;     /* hilangkan sedikit offset naik */
+  }
+
+  #transmission p {
+    font-size: 1rem;         /* sedikit kecil biar muat */
+    line-height: 1.7;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: none;
+  }
+}
+
 /* === 🎯 Wrapper tengah untuk teks + kue === */
 #centerWrapper {
   position: fixed;
