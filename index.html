@@ -83,26 +83,6 @@ letter-spacing: 1px;
   }
 }
 
-/* === SCORPIO CENTER WRAPPER === */
-#scorpioCenter {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 6;
-  pointer-events: none;
-}
-
-/* Kalau mau geser dikit nanti, ubah translate di sini */
-#scorpioCenter.adjust {
-  transform: translate(-48%, -52%);
-}
-
 /* === NOVEMBER SKIES SCENE === */
 #transmission {
   position: fixed;
@@ -111,26 +91,11 @@ letter-spacing: 1px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  text-align: center;
-  background: #0c0c0c;
+  background-color: #0c0c0c;
   opacity: 0;
-  transition: opacity 1.5s ease;
   z-index: 25;
-  overflow: hidden; /* sementara biar nggak scroll dulu */
-}
-
-/* 🔧 Pastikan teks dan huruf November Skies tetap stabil & benar-benar center */
-#transmission .mast__title span {
-  display: inline-block;
-  vertical-align: middle;
-  transform: translateY(0) !important;
-  margin: 0 0.03em;
-}
-
-/* 🔧 Kalau masih kelihatan sedikit naik/turun, atur posisi keseluruhan teks */
-#transmission .mast__header {
-  position: relative;
-  top: 2px; /* bisa ubah -3 sampai 3 sesuai tampilan, biar pas tengah */
+  transition: opacity 1.5s ease;
+  overflow: hidden;
 }
 
 /* sembunyikan teks sebelum animasi huruf dimulai */
@@ -148,9 +113,7 @@ letter-spacing: 1px;
   padding: 4rem 2rem;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  margin: auto; /* ✅ ini kuncinya */
-  transform: none; /* ❌ hapus dorongan ke atas */
-  box-sizing: border-box;
+  transform: translateY(-8%);
 }
 
 /* Garis neon atas–bawah */
@@ -238,26 +201,15 @@ letter-spacing: 1px;
   margin: 1em auto;
   background-color: rgba(255,255,255,0.4);
 }
-
-/* === EVEN IN SILENCE (CENTERED TEXT) === */
 .mast__text {
   font-family: "Cutive Mono", monospace;
-  font-size: clamp(1rem, 3vw, 1.4rem); /* ✅ biar otomatis sesuai ukuran layar */
-  line-height: 1.8;
+  font-size: 1.2rem;
+  line-height: 1.9;
   margin: 0 auto;
-  text-align: center; /* ✅ selalu di tengah, gak justify */
+  text-align: justify;
+  text-align-last: center;
   color: #fff;
-  max-width: 700px; /* ✅ batasi biar gak kepotong di HP */
-  box-sizing: border-box;
 }
-
-@media (max-width: 500px) {
-  .mast__text {
-    padding: 0 1rem; /* kasih ruang kiri-kanan */
-    font-size: 1rem; /* biar muat semua di HP */
-  }
-}
-
 .mast__text p {
   margin: 0.8em 0;
   text-align: center;
@@ -770,9 +722,8 @@ document.getElementById("beginButton").addEventListener("click", async function(
 });
 </script>
 
-  <div id="scorpioCenter">
+  <!-- Scorpio logo image (same as original) -->
   <img src="https://s12.gifyu.com/images/b3bZv.png" class="logo" id="scorpioLogo" alt="Scorpio Logo" />
-</div>
 
   <!-- SVG path (same as original) -->
   <svg id="heartSVG" width="600" height="560" viewBox="0 0 600 560" style="position:absolute; left:-9999px; top:-9999px;">
@@ -1425,7 +1376,7 @@ renderer.domElement.style.top = '0';
 renderer.domElement.style.left = '0';
 renderer.domElement.style.zIndex = 6;
 renderer.domElement.style.pointerEvents = 'none';
-document.getElementById('scorpioCenter').appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement);
 
 // agar background CSS kelihatan (transparan)
 renderer.setClearColor(0x000000, 0);
@@ -1462,6 +1413,7 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.3));
     const glowMesh = new THREE.Mesh(glowGeo, glowMat);
     glowMesh.rotation.x = Math.PI * -0.5;
     glowMesh.position.z = -20;
+    scene.add(glowMesh);
     gsap.to(glowMesh.scale, { x:1.05, y:1.05, duration:4, yoyo:true, repeat:-1, ease:"sine.inOut" });
 
     /* Build targets from SVG path (same mapping as original) */
@@ -1500,14 +1452,6 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
     const points = new THREE.Points(geom, mat);
     scene.add(points);
-
-  // ✨ Pastikan posisi awal benar-benar di tengah
-scene.position.x = 0;
-scene.position.y = 0;
-points.position.x = 0;
-points.position.y = 0;
-
-
 
     /* current positions array to tween (mimic original 'current' array) */
     const current = [];
@@ -1602,19 +1546,13 @@ points.position.y = 0;
     }
     render();
 
- // 🔁 biar tetap center saat ukuran layar berubah (HP / fullscreen)
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.domElement.style.width = '100%';
-  renderer.domElement.style.height = '100%';
-  scene.position.set(0, 0, 0);
-  points.position.set(0, 0, 0);
-  camera.position.set(0, 0, 600);
-});
+    window.addEventListener('resize', ()=>{
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
 
- // setelah 12 detik Scorpio berjalan, lanjut ke Incoming Transmission
+    // setelah 12 detik Scorpio berjalan, lanjut ke Incoming Transmission
     setTimeout(() => {
   startTransmissionScene();
 }, 12000);
