@@ -789,33 +789,31 @@ document.getElementById("beginButton").addEventListener("click", async function(
   <!-- We'll load Three.js & GSAP only when starting Scorpio to preserve "identical" behavior -->
   <script>
 
-  /*
-    Fix khusus untuk teks "November Skies"
-    Supaya tidak terpotong di tengah kata, tapi animasi tetap jalan.
-  */
-  function fixNovemberSkiesText() {
-    const elements = document.querySelectorAll('.js-line');
-    elements.forEach(el => {
-      const words = el.textContent.trim().split(' ');
-      el.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+    /* ====== Fix total untuk teks "November Skies" ====== */
+  document.addEventListener('DOMContentLoaded', () => {
+    // Ambil semua paragraf di area November Skies
+    const textBlock = document.querySelector('#text-block');
+    if (!textBlock) return;
+
+    // Bersihkan semua span yang bikin huruf per huruf
+    textBlock.querySelectorAll('span').forEach(span => {
+      // kalau span cuma ngebungkus satu huruf, gabung balik ke teks
+      if (span.textContent.length === 1) {
+        span.replaceWith(span.textContent);
+      }
     });
-  }
 
-  document.addEventListener('DOMContentLoaded', fixNovemberSkiesText);
-
-  const style = document.createElement('style');
-  style.textContent = `
-    .word {
-      display: inline-block;
-      opacity: 0;
-      animation: wordFade 0.6s ease forwards;
-    }
-    @keyframes wordFade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-  document.head.appendChild(style);
+    // Atur gaya ulang biar teks bisa turun baris normal
+    const pList = textBlock.querySelectorAll('p');
+    pList.forEach(p => {
+      p.style.wordBreak = 'keep-all';
+      p.style.overflowWrap = 'normal';
+      p.style.wordWrap = 'normal';
+      p.style.whiteSpace = 'normal';
+      p.style.display = 'block';
+      p.style.textAlign = 'center';
+    });
+  });
 
   /* ================= AUDIO & FLAGS ================= */
   const READY_VOLUME = 0.8, GO_VOLUME = 0.5, BGM_VOLUME = 0.72;
