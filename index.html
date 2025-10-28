@@ -201,6 +201,18 @@ letter-spacing: 1px;
   margin: 1em auto;
   background-color: rgba(255,255,255,0.4);
 }
+
+/* 🧩 Fix kata terpotong di HP (November Skies) */
+@media (max-width: 600px) {
+  #transmission p {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: keep-all;  /* kata tidak dipecah tengah huruf */
+    hyphens: none;         /* matikan pemotongan otomatis */
+    padding: 0 1.5rem;     /* beri jarak kiri–kanan biar lega */
+  }
+}
+
 .mast__text {
   font-family: "Cutive Mono", monospace;
   font-size: 1.2rem;
