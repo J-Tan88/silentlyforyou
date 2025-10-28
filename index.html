@@ -140,8 +140,6 @@ letter-spacing: 1px;
 
 /* Tulisan pojok kanan bawah (J.Tan) */
 .mast__signature-text {
-  opacity: 0;
-  visibility: hidden; /* 🔹 penting: sembunyikan total di awal */
   position: absolute;
   right: 2.2rem;
   bottom: 1.3rem;
@@ -149,6 +147,7 @@ letter-spacing: 1px;
   font-family: "Dancing Script", cursive;
   color: #ffe6ff;
   letter-spacing: 0.05em;
+  opacity: 0.9;
   text-shadow: 0 0 10px rgba(255, 180, 255, 0.8),
                0 0 18px rgba(153, 221, 255, 0.6);
   transition: opacity 0.4s ease, text-shadow 0.4s ease;
@@ -230,35 +229,15 @@ letter-spacing: 1px;
 /* Import font baru */
 @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
 
-/* === 🎯 Wrapper tengah untuk teks + kue === */
-#centerWrapper {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  z-index: 5;
-}
-
-/* === 🎉 Teks utama === */
-#wish {
-  color: #fff;
-  font-family: "Cutive Mono", monospace;
-  font-size: 2.5rem;
-  line-height: 1.4;
-  text-shadow: 0 0 20px rgba(255,255,255,0.8),
-               0 0 40px rgba(255,200,200,0.6);
-  margin: 0;
-}
-
-/* === 🎂 Kue di bawah teks === */
+/* === 🎂 Birthday Cake + Candle Flame === */
 #cakeWrapper {
-  position: relative;
-  margin-top: 438px; /* jarak di bawah teks */
-  margin-left: 38px; /* ⬅️ geser 100px ke kanan */
+  position: absolute;
+  top: 63%;
+  left: 45%;
+  transform: translate(-50%, 0);
   display: none;
-  pointer-events: none;
   z-index: 3;
+  pointer-events: none;
   filter: drop-shadow(0 0 20px rgba(255, 200, 100, 0.4));
 }
 
@@ -304,18 +283,20 @@ letter-spacing: 1px;
   border-radius: 50% 50% 40% 40% / 85% 85% 25% 25%;
   background: radial-gradient(circle at 50% 20%,
               rgba(255,255,255,1) 0%,           
-              rgba(255,245,180,0.95) 25%,       
-              rgba(255,180,50,0.8) 55%,         
-              rgba(255,100,0,0.5) 80%,          
+              rgba(255,250,200,0.98) 25%,       
+              rgba(255,220,100,0.9) 50%,        
+              rgba(255,160,40,0.7) 70%,         
+              rgba(255,80,0,0.35) 90%,          
               transparent 100%);
   box-shadow:
-    0 0 10px rgba(255,220,100,0.8),
-    0 0 20px rgba(255,180,60,0.6),
-    0 0 35px rgba(255,140,40,0.4);
+  0 0 25px rgba(255,255,210,0.9),
+  0 0 60px rgba(255,210,120,0.7),
+  0 0 100px rgba(255,170,60,0.5);
   animation:
     candleFlicker 0.05s infinite alternate ease-in-out,
-    candleFlash 0.25s infinite ease-in-out;
-  filter: brightness(1.8) contrast(1.2);
+    candleFlash 0.25s infinite ease-in-out,
+    candleGlowPulse 2s infinite ease-in-out;  /* ✨ efek cahaya kuning */
+  filter: brightness(2) contrast(1.3) saturate(1.25);
   opacity: 1;
   z-index: 5;
 }
@@ -442,285 +423,24 @@ letter-spacing: 1px;
   <canvas id="birthday"></canvas>
   <canvas id="c"></canvas>
 
- <!-- ✨ Bungkus tulisan dan kue dalam satu container -->
-<div id="centerWrapper">
-
   <h1 id="wish">Happy Birthday<br>Someone 🎂</h1>
-
   <!-- 🎂 Birthday Cake + Candle -->
-  <div id="cakeWrapper">
-    <img id="cakeImg" src="https://s12.gifyu.com/images/b3d2t.png" alt="Birthday Cake" />
-    
-    <!-- 🕯️ Lilin kecil lengkap -->
-    <div id="birthdayCandle">
-      <div id="candleBase"></div>
-      <div id="candleFlame"></div>
-      <div id="candleSparks"></div>
-    </div>
-  </div>
 
+<div id="cakeWrapper">
+  <img id="cakeImg" src="https://s12.gifyu.com/images/b3d2t.png" alt="Birthday Cake" />
+  
+  <!-- 🕯️ Lilin kecil lengkap -->
+  <div id="birthdayCandle">
+    <div id="candleBase"></div>
+    <div id="candleFlame"></div>
+      <div id="candleSparks"></div>
+  </div>
 </div>
 
   <!-- Audio elements -->
   <audio id="readySound" src="https://cdn.jsdelivr.net/gh/hantulautz88/bdaysound/ready_iZVXBQL.mp3" preload="auto"></audio>
   <audio id="goSound" src="https://cdn.jsdelivr.net/gh/hantulautz88/bdaysound/letx27s-go-352481.mp3" preload="auto"></audio>
   <audio id="fireworkMusic" src="https://cdn.jsdelivr.net/gh/hantulautz88/bdaysound/WhatsApp%20Audio%202025-10-18%20at%2006.19.02.mpeg" preload="auto" loop></audio>
-
-<!-- ================= FUTURISTIC KEYPAD WITH PIN DISPLAY ================= -->
-<style>
-#pinScreen {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 40%, #010203, #000);
- animation: bgPulse 3.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-  transition: opacity 1s ease;
-  overflow: hidden;
-}
-
-@keyframes bgPulse {
-  0%   { background: radial-gradient(circle at 50% 40%, #010203, #000); }
-  100% { background: radial-gradient(circle at 50% 40%, #02181a, #000); }
-}
-
-/* panel */
-#pinPanel {
-  background: linear-gradient(180deg, #04080b, #010304);
-  border-radius: 20px;
-  padding: 35px 25px 30px;
-  box-shadow:
-    0 0 40px rgba(0, 255, 200, 0.1),
-    inset 0 0 25px rgba(0, 255, 200, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* PIN display area */
-#pinDisplay {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 28px;
-}
-.pinDigit {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(0,255,200,0.08), rgba(0,0,0,0.6));
-  border: 1px solid rgba(0,255,200,0.25);
-  color: #b8fff7;
-  font-family: 'Cutive Mono', monospace;
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 0 10px rgba(0,255,200,0.3);
-  box-shadow:
-    inset 0 0 10px rgba(0,255,200,0.1),
-    0 0 10px rgba(0,255,200,0.05);
-  opacity: 0.3;
-  transition: opacity 0.2s ease;
-}
-.pinDigit.visible { opacity: 1; }
-
-/* keypad */
-#keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  width: 260px;
-}
-
-/* keys */
-.key {
-  position: relative;
-  height: 60px;
-  border-radius: 12px;
-  background: radial-gradient(circle at 50% 30%, #0b1214 0%, #000 100%);
-  border: 1px solid rgba(0,255,200,0.2);
-  color: #b8fff7;
-  font-family: 'Cutive Mono', monospace;
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow:
-    0 0 8px rgba(0,255,200,0.12),
-    inset 0 0 12px rgba(0,255,200,0.05),
-    inset 0 -3px 10px rgba(0,255,200,0.08);
-  transition: all 0.15s ease;
-}
-.key::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  box-shadow: 0 0 16px rgba(0,255,200,0.25);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.key:hover::before { opacity: 1; }
-.key:active {
-  transform: scale(0.96);
-  box-shadow: inset 0 0 12px rgba(0,255,200,0.25), 0 0 8px rgba(0,255,200,0.2);
-}
-
-/* special keys */
-.key.back {
-  font-size: 1.3rem;
-  background: radial-gradient(circle at 50% 30%, #081013, #000);
-}
-.key.enter {
-  grid-column: 1 / span 3;
-  height: 60px;
-  margin-top: 14px;
-  background: linear-gradient(180deg, rgba(0,255,200,0.25), rgba(0,80,70,0.5));
-  border-color: rgba(0,255,200,0.4);
-  color: #e9fffb;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 0 25px rgba(0,255,200,0.25);
-}
-
-/* unlock glow */
-#pinScreen.unlocking::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.4), transparent 70%);
-  animation: unlockPulse 0.8s ease-out forwards;
-}
-
-@keyframes unlockPulse {
-  0% { opacity: 0; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.4); }
-  100% { opacity: 0; transform: scale(2); }
-}
-
-/* shake wrong */
-#pinPanel.shake { animation: shake 0.4s ease; }
-@keyframes shake {
-  0%,100%{transform:translateX(0);}
-  20%{transform:translateX(-10px);}
-  40%{transform:translateX(8px);}
-  60%{transform:translateX(-6px);}
-  80%{transform:translateX(4px);}
-}
-</style>
-
-<div id="pinScreen">
-  <div id="pinPanel">
-    <div id="pinDisplay">
-      <div class="pinDigit" data-index="0"></div>
-      <div class="pinDigit" data-index="1"></div>
-      <div class="pinDigit" data-index="2"></div>
-      <div class="pinDigit" data-index="3"></div>
-    </div>
-    <div id="keypad">
-      <div class="key" data-val="1">1</div>
-      <div class="key" data-val="2">2</div>
-      <div class="key" data-val="3">3</div>
-      <div class="key" data-val="4">4</div>
-      <div class="key" data-val="5">5</div>
-      <div class="key" data-val="6">6</div>
-      <div class="key" data-val="7">7</div>
-      <div class="key" data-val="8">8</div>
-      <div class="key" data-val="9">9</div>
-      <div class="key" data-val="0">0</div>
-      <div class="key back" data-action="back">⌫</div>
-      <div class="key enter" data-action="enter">ENTER</div>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-  const correctPIN="1511";
-  const digits=[];
-  const maxLen=4;
-  const screen=document.getElementById('pinScreen');
-  const panel=document.getElementById('pinPanel');
-  const keypad=document.getElementById('keypad');
-  const displays=[...document.querySelectorAll('.pinDigit')];
-
-  function render(){
-    for(let i=0;i<maxLen;i++){
-      const val=digits[i];
-      displays[i].textContent=val ?? '';
-      if(val) displays[i].classList.add('visible');
-      else displays[i].classList.remove('visible');
-    }
-  }
-
-  function checkPIN(){
-    if(digits.join('')===correctPIN){
-  screen.classList.add('unlocking');
-
-  // ✨ langsung sembunyikan panel biar nggak kelihatan bayangannya
-  panel.style.transition = "opacity 0.3s ease";
-  panel.style.opacity = "0";
-
-  setTimeout(async()=>{
-    screen.style.opacity='0';
-    setTimeout(()=>{
-      screen.style.display='none';
-      screen.remove();
-    },1000);
-
-        try{
-          await readySound.play(); readySound.pause(); readySound.currentTime=0;
-          await goSound.play(); goSound.pause(); goSound.currentTime=0;
-          await fireworkMusic.play(); fireworkMusic.pause(); fireworkMusic.currentTime=0;
-        }catch(e){console.warn('Autoplay unlock fail',e);}
-        startSequence();
-      },500);
-    }else{
-      panel.classList.add('shake');
-      setTimeout(()=>panel.classList.remove('shake'),400);
-      digits.length=0; render();
-    }
-  }
-
-  keypad.addEventListener('click',e=>{
-    const k=e.target.closest('.key');
-    if(!k) return;
-    const v=k.dataset.val, a=k.dataset.action;
-    if(v){ digits.push(v); render(); if(digits.length===maxLen) checkPIN(); }
-    else if(a==='back'){ digits.pop(); render(); }
-    else if(a==='enter'&&digits.length===maxLen){ checkPIN(); }
-  });
-
-  render();
-})();
-</script>
-
-<script>
-document.getElementById("beginButton").addEventListener("click", async function() {
-  const btn = this;
-  btn.disabled = true;
-  btn.style.pointerEvents = "none";
-  btn.style.opacity = "0";
-  btn.style.transition = "opacity 0.8s ease";
-  setTimeout(() => btn.remove(), 900);
-
-  // pastikan semua audio sudah siap dan diizinkan
-  try {
-    await readySound.play(); readySound.pause(); readySound.currentTime = 0;
-    await goSound.play(); goSound.pause(); goSound.currentTime = 0;
-    await fireworkMusic.play(); fireworkMusic.pause(); fireworkMusic.currentTime = 0;
-  } catch (e) {
-    console.warn("Autoplay unlock fail:", e);
-  }
-
-  // jalankan urutan utama
-  startSequence();
-});
-</script>
 
   <!-- Scorpio logo image (same as original) -->
   <img src="https://s12.gifyu.com/images/b3bZv.png" class="logo" id="scorpioLogo" alt="Scorpio Logo" />
@@ -762,7 +482,7 @@ document.getElementById("beginButton").addEventListener("click", async function(
       </div>
     </header>
 
-    <div id="jTan" class="mast__signature-text">J.Tan</div>
+    <div class="mast__signature-text">J.Tan</div>
 
   </section>
 </div>
@@ -774,7 +494,7 @@ document.getElementById("beginButton").addEventListener("click", async function(
   <!-- We'll load Three.js & GSAP only when starting Scorpio to preserve "identical" behavior -->
   <script>
   /* ================= AUDIO & FLAGS ================= */
-  const READY_VOLUME = 0.8, GO_VOLUME = 0.5, BGM_VOLUME = 0.72;
+  const READY_VOLUME = 0.8, GO_VOLUME = 0.4, BGM_VOLUME = 0.72;
   const readySound = document.getElementById('readySound');
   const goSound = document.getElementById('goSound');
   const fireworkMusic = document.getElementById('fireworkMusic');
@@ -836,15 +556,10 @@ document.getElementById("beginButton").addEventListener("click", async function(
   const scorpioLogo = document.getElementById('scorpioLogo');
 
   function startSequence(){
-  readyText.classList.add('show');
-  readySound.play().catch(()=>{});
-  setTimeout(()=>{
-    readyText.classList.remove('show');
-    // kasih waktu 400ms buat fade-nya beres dulu
-    setTimeout(()=> startCountdown(), 400);
-  }, 2500);
-}
-
+    readyText.classList.add('show');
+    readySound.play().catch(()=>{});
+    setTimeout(()=>{ readyText.classList.remove('show'); startCountdown(); }, 2500);
+  }
   function startCountdown(){
     countdownContainer.style.display = "flex";
     let count = 3;
@@ -876,12 +591,18 @@ document.getElementById("beginButton").addEventListener("click", async function(
   const fireworkMusicOffsetMs = 800; // when to start music relative to fade
   const fireworkMusicFadeInMs = 800;
 
-  function startFireworkMusicWithOffset() {
-  try { fireworkMusic.currentTime = 0; } catch (e) {}
-  fireworkMusic.volume = 0; // mulai dari 0 biar gak nyentak
-  fireworkMusic.play().catch(() => {});
-  gsap.to(fireworkMusic, { volume: 0.72, duration: 2, ease: "sine.inOut" }); // fade halus ke 0.72
-}
+  function startFireworkMusicWithOffset(){
+    try{ fireworkMusic.currentTime = 0; }catch(e){}
+    fireworkMusic.play().catch(()=>{});
+    if (fireworkMusicFadeInMs > 0){
+      const target = fireworkMusic.volume;
+      fireworkMusic.volume = 0;
+      const stepMs = 50;
+      const steps = Math.max(1, Math.floor(fireworkMusicFadeInMs / stepMs));
+      let curStep = 0;
+      const iv = setInterval(()=>{ curStep++; const v = Math.min(1, curStep/steps) * target; fireworkMusic.volume = v; if (curStep>=steps){ clearInterval(iv); fireworkMusic.volume = target; } }, stepMs);
+    }
+  }
 
   function startFadeTransition(){
     fadeOverlay.style.opacity = "1";
@@ -1220,6 +941,8 @@ async function playCakePerCycle() {
 // 🚀 Jalankan loop kue
 playCakePerCycle();
 
+
+
     function anim2(){
       requestAnimationFrame(anim2);
       ctx2.clearRect(0,0,w,h);
@@ -1285,29 +1008,31 @@ playCakePerCycle();
   gsap.to(canvas, { opacity: 0.4, duration: 0.8, ease: "power2.inOut" });
   gsap.to(bdayCanvas, { opacity: 0.4, duration: 0.8, ease: "power2.inOut" });
 
+  // sedikit redupkan musik agar fokus ke transisi
+  gsap.to(fireworkMusic, { volume: 0.6, duration: 1.0, ease: "power1.inOut" });
+
   // mulai Scorpio tanpa jeda kasar, biar nyatu
 setTimeout(() => {
 
-  // 🔮 Particle Morph Glow 🔮
-  const glow = document.createElement("div");
-  glow.style.position = "fixed";
-  glow.style.inset = "0";
-  glow.style.background =
-    "radial-gradient(circle at center, rgba(180,120,255,0.35), rgba(120,80,200,0.15) 40%, transparent 80%)";
-  glow.style.opacity = "0";
-  glow.style.zIndex = "9998";
-  glow.style.pointerEvents = "none";
-  glow.style.filter = "blur(30px)";
-  document.body.appendChild(glow);
+  // 🌌 Star Fade Transition 🌌
+  const stars = document.createElement("div");
+  stars.style.position = "fixed";
+  stars.style.inset = "0";
+  stars.style.backgroundImage = "radial-gradient(white 1px, transparent 1px)";
+  stars.style.backgroundSize = "3px 3px";
+  stars.style.opacity = "0";
+  stars.style.zIndex = "9998";
+  stars.style.pointerEvents = "none";
+  document.body.appendChild(stars);
 
-  // animasi cahaya violet muncul lalu memudar
-  gsap.to(glow, { opacity: 0.8, duration: 0.6, ease: "power2.out" });
-  gsap.to(glow, {
+  // animasi bintang muncul dan memudar
+  gsap.to(stars, { opacity: 0.6, duration: 0.8, ease: "sine.inOut" });
+  gsap.to(stars, {
     opacity: 0,
-    duration: 1.0,
-    delay: 1.0,
-    ease: "power1.inOut",
-    onComplete: () => glow.remove()
+    duration: 1.2,
+    delay: 1.2,
+    ease: "sine.inOut",
+    onComplete: () => stars.remove()
   });
 
   // lanjut ke Scorpio
@@ -1344,6 +1069,9 @@ setTimeout(() => {
     // 4) fade out the 2D canvases but keep the burst visible for a short moment
     gsap.to(canvas, { opacity: 0, duration: 1.2, ease: "power2.inOut", onComplete: ()=> { canvas.style.display = 'none'; }});
     gsap.to(bdayCanvas, { opacity: 0, duration: 1.2, ease: "power2.inOut", onComplete: ()=> { bdayCanvas.style.display = 'none'; }});
+
+    // 5) slightly reduce music volume to emphasize new scene but keep playing
+    gsap.to(fireworkMusic, { volume: 0.62, duration: 1.8, ease: "power1.inOut" });
 
     // 6) after a short delay, initialize Scorpio (Three.js) and morph particles
     setTimeout(()=> {
@@ -1552,6 +1280,9 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.3));
       renderer.setSize(innerWidth, innerHeight);
     });
 
+            // Done: Scorpio scene running. Slightly raise music to a steady level if you want
+    gsap.to(fireworkMusic, { volume: 0.65, duration: 1.4 });
+
     // setelah 12 detik Scorpio berjalan, lanjut ke Incoming Transmission
     setTimeout(() => {
   startTransmissionScene();
@@ -1585,62 +1316,28 @@ function startTransmissionScene() {
       span.style.animation = 'letterGlow 0.6s ease forwards';
       span.style.animationDelay = `${delay}s`;
       line.appendChild(span);
-      delay += 0.09;
+      delay += 0.05;
     }
     delay += 0.6;
   });
-
-// —— Tambahan animasi per huruf untuk "J.Tan" —— 
-const jTanEl = document.getElementById('jTan');
-if (jTanEl) {
-  const jText = jTanEl.textContent.trim();
-  jTanEl.textContent = '';
-
-  // 🔹 Sembunyikan elemen dulu sampai waktunya muncul
-  jTanEl.style.opacity = 0;
-  jTanEl.style.visibility = 'hidden';
-
-  // 🔹 Gunakan delay terakhir langsung (tanpa jeda tambahan)
-  setTimeout(() => {
-    jTanEl.style.visibility = 'visible';
-    gsap.to(jTanEl, { opacity: 1, duration: 0.4, ease: "sine.inOut" });
-
-    // 🔹 Ketik huruf per huruf langsung setelah huruf terakhir kalimat utama
-    let subDelay = 0;
-    for (const ch of jText) {
-      const span = document.createElement('span');
-      span.textContent = ch === ' ' ? '\u00A0' : ch;
-      span.style.animation = 'letterGlow 0.6s ease forwards';
-      span.style.animationDelay = `${subDelay}s`;
-      jTanEl.appendChild(span);
-      subDelay += 0.09;
-    }
-  }, (delay * 1000) - 150); // ⏱️ mulai 0.15s lebih cepat, nyatu langsung pas huruf terakhir muncul
-}
-// —— selesai animasi J.Tan —— 
-}, 1600);
+}, 1200);
 
   // 🔥 Hilangkan logo Scorpio & canvas pelan-pelan
-  gsap.to('#scorpioLogo', { opacity: 0, duration: 1.2, ease: "power2.inOut" });
-  gsap.to('canvas', { opacity: 0, duration: 1.4, ease: "power2.inOut" });
+  gsap.to('#scorpioLogo', { opacity: 0, duration: 2, ease: "power2.inOut" });
+  gsap.to('canvas', { opacity: 0, duration: 2.5, ease: "power2.inOut" });
 
   // setelah 12 detik, fade out dan lanjut ke Spiral Scene
 setTimeout(() => {
-   gsap.to(t, {
+  gsap.to(t, {
     opacity: 0,
-    duration: 2.2,
-    ease: "sine.inOut",
+    duration: 2,
+    ease: "power2.inOut",
     onComplete: () => {
-      // Begitu fade-out selesai, langsung sembunyikan total
-      t.style.display = "none";
+      t.style.display = 'none';
+      startSpiralScene();
     }
   });
-
-  // Mulai scene berikut sedikit sebelum fade benar-benar habis
-  setTimeout(() => {
-    startSpiralScene();
-  }, 1100); // overlap ringan biar transisi halus
-}, 40000);
+}, 27000);
 }
 
 /* ================= SPIRAL SCENE ================= */
@@ -1659,20 +1356,19 @@ function startSpiralScene() {
     ease: "sine.inOut"
   });
 
-// ✨ Munculkan spiral dengan fade lembut
-setTimeout(() => {
-  // 🔹 Bangun dulu spiral diam-diam (belum kelihatan)
-  initSpiralAnimation();
+  // 🎵 Optionally fade music softer for ambient
+  gsap.to(fireworkMusic, { volume: 0.5, duration: 2, ease: "sine.inOut" });
 
-  // 🔹 Tunggu sebentar supaya browser selesai render huruf-huruf
-  setTimeout(() => {
-    gsap.to([spiral1, spiral2], {
-      opacity: 1,
-      duration: 3.2,
-      ease: "sine.inOut"
-    });
-  }, 300); // jeda 0.3 detik biar munculnya mulus banget
-}, 500);
+  // ✨ Lebih cepat masuk spiral
+setTimeout(() => {
+  gsap.to([spiral1, spiral2], {
+    opacity: 1,
+    duration: 1.2, // fade-in lebih cepat
+    ease: "power2.out",
+    onStart: initSpiralAnimation
+  });
+}, 500); // tampil lebih cepat setelah fade Transmission
+
 }
 
 function initSpiralAnimation() {
@@ -1780,10 +1476,10 @@ function startDustEffect() {
 }
 
 /* ================= BOOT ================= */
-// window.onload = ()=> {
-//   // start sequence after small delay so resources load
-//   setTimeout(startSequence, 800);
-// };
+window.onload = ()=> {
+  // start sequence after small delay so resources load
+  setTimeout(startSequence, 800);
+};
 </script>
 
 <!-- GSAP is used in the 2D/transition; we include it upfront to allow the 2D timeline to use gsap -->
