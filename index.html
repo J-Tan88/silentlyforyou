@@ -120,6 +120,38 @@ letter-spacing: 1px;
   padding: 4vh 0;               /* ⬅️ jarak aman atas–bawah */
 }
 
+/* 📱 Fix tampilan November Skies di layar HP */
+@media (max-width: 500px) {
+
+  #transmission {
+    padding: 7vh 1rem 10vh 1rem; /* tambah ruang aman atas-bawah */
+  }
+
+  #transmission h1 {
+    font-size: 1.1rem; /* sedikit lebih kecil biar muat */
+    letter-spacing: 0.15em;
+  }
+
+  .mast__text {
+    font-size: 0.95rem;  /* kecilin sedikit biar gak kepotong */
+    line-height: 1.8;
+    padding: 0 0.8rem;
+    word-break: normal;
+    white-space: normal;
+    letter-spacing: 0.03em; /* kurangi spasi antar huruf */
+  }
+
+  .mast__text p {
+    margin: 1em 0;
+  }
+
+  .mast__signature-text {
+    right: 1.2rem;
+    bottom: 2.8rem; /* kasih jarak lebih dari teks terakhir */
+    font-size: 1.1rem;
+  }
+}
+
 /* 🔧 Pastikan teks dan huruf November Skies tetap stabil & benar-benar center */
 #transmission .mast__title span {
   display: inline-block;
