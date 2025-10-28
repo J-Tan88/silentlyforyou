@@ -141,7 +141,7 @@ letter-spacing: 1px;
 /* Tulisan pojok kanan bawah (J.Tan) */
 .mast__signature-text {
   opacity: 0;
-  visibility: hidden; /* 🔹 penting: sembunyikan total di awal */
+  visibility: hidden;
   position: absolute;
   right: 2.2rem;
   bottom: 1.3rem;
@@ -180,19 +180,20 @@ letter-spacing: 1px;
   white-space: normal;
   word-wrap: normal;
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   color: #ffffff;
 }
 
+/* Responsif HP */
 @media (max-width: 600px) {
   #transmission p {
     word-break: keep-all;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
     word-wrap: normal;
-    padding: 0 1.2rem;
+    padding: 0 1.4rem;
+    display: block;
   }
 }
-
 
 /* Isi teks */
 .mast__header { position: relative; z-index: 2; margin: auto; max-width: 750px; }
@@ -217,10 +218,13 @@ letter-spacing: 1px;
   font-size: 1.2rem;
   line-height: 1.9;
   margin: 0 auto;
-  text-align: justify;
-  text-align-last: center;
+  text-align: center;          /* ⬅️ ubah dari justify ke center */
   color: #fff;
+  word-break: keep-all;        /* jaga kata tetap utuh */
+  overflow-wrap: normal;       /* biar gak maksa patah */
+  word-wrap: normal;
 }
+
 .mast__text p {
   margin: 0.8em 0;
   text-align: center;
