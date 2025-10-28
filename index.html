@@ -83,6 +83,26 @@ letter-spacing: 1px;
   }
 }
 
+/* === SCORPIO CENTER WRAPPER === */
+#scorpioCenter {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* Kalau mau geser dikit nanti, ubah translate di sini */
+#scorpioCenter.adjust {
+  transform: translate(-48%, -52%);
+}
+
 /* === NOVEMBER SKIES SCENE === */
 #transmission {
   position: fixed;
@@ -91,11 +111,26 @@ letter-spacing: 1px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: #0c0c0c;
+  text-align: center;
+  background: #0c0c0c;
   opacity: 0;
-  z-index: 25;
   transition: opacity 1.5s ease;
-  overflow: hidden;
+  z-index: 25;
+  overflow: hidden; /* sementara biar nggak scroll dulu */
+}
+
+/* 🔧 Pastikan teks dan huruf November Skies tetap stabil & benar-benar center */
+#transmission .mast__title span {
+  display: inline-block;
+  vertical-align: middle;
+  transform: translateY(0) !important;
+  margin: 0 0.03em;
+}
+
+/* 🔧 Kalau masih kelihatan sedikit naik/turun, atur posisi keseluruhan teks */
+#transmission .mast__header {
+  position: relative;
+  top: 2px; /* bisa ubah -3 sampai 3 sesuai tampilan, biar pas tengah */
 }
 
 /* sembunyikan teks sebelum animasi huruf dimulai */
@@ -113,7 +148,9 @@ letter-spacing: 1px;
   padding: 4rem 2rem;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  transform: translateY(-8%);
+  margin: auto; /* ✅ ini kuncinya */
+  transform: none; /* ❌ hapus dorongan ke atas */
+  box-sizing: border-box;
 }
 
 /* Garis neon atas–bawah */
@@ -141,7 +178,7 @@ letter-spacing: 1px;
 /* Tulisan pojok kanan bawah (J.Tan) */
 .mast__signature-text {
   opacity: 0;
-  visibility: hidden;
+  visibility: hidden; /* 🔹 penting: sembunyikan total di awal */
   position: absolute;
   right: 2.2rem;
   bottom: 1.3rem;
@@ -178,21 +215,9 @@ letter-spacing: 1px;
   margin: 0.8em 0;
   text-align: center;
   white-space: normal;
-  word-wrap: normal;
-  word-break: keep-all;
-  overflow-wrap: normal;
+  word-wrap: break-word;
+  word-break: break-word;
   color: #ffffff;
-}
-
-/* Responsif HP */
-@media (max-width: 600px) {
-  #transmission .mast__text p {
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
-    white-space: normal !important;
-    padding: 0 1.4rem !important;
-    display: block !important;
-  }
 }
 
 /* Isi teks */
@@ -213,42 +238,35 @@ letter-spacing: 1px;
   margin: 1em auto;
   background-color: rgba(255,255,255,0.4);
 }
+
+/* === EVEN IN SILENCE (CENTERED TEXT) === */
 .mast__text {
   font-family: "Cutive Mono", monospace;
-  font-size: 1.2rem;
-  line-height: 1.9;
+  font-size: clamp(1rem, 3vw, 1.4rem); /* ✅ biar otomatis sesuai ukuran layar */
+  line-height: 1.8;
   margin: 0 auto;
-  text-align: center;          /* ⬅️ ubah dari justify ke center */
+  text-align: center; /* ✅ selalu di tengah, gak justify */
   color: #fff;
-  word-break: keep-all;        /* jaga kata tetap utuh */
-  overflow-wrap: normal;       /* biar gak maksa patah */
-  word-wrap: normal;
+  max-width: 700px; /* ✅ batasi biar gak kepotong di HP */
+  box-sizing: border-box;
+}
+
+@media (max-width: 500px) {
+  .mast__text {
+    padding: 0 1rem; /* kasih ruang kiri-kanan */
+    font-size: 1rem; /* biar muat semua di HP */
+  }
 }
 
 .mast__text p {
   margin: 0.8em 0;
   text-align: center;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  white-space: normal;
 }
-
 .mast__text span {
   opacity: 0;
   display: inline-block;
   animation: letterGlow 0.6s ease forwards;
 }
-
-/* Tambahan untuk animasi huruf per kata */
-.mast__text .word {
-  display: inline;
-  white-space: nowrap;  /* jaga satu kata utuh */
-}
-
-.mast__text .char {
-  display: inline-block; /* huruf bisa dianimasikan */
-}
-
 .nobreak-text { display: inline-block; white-space: nowrap; }
 
 @keyframes letterGlow {
@@ -259,22 +277,6 @@ letter-spacing: 1px;
 
 /* Import font baru */
 @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
-</style>
-
-<script>
-  // Jalankan semua scene begitu halaman siap dimuat
-  document.addEventListener('DOMContentLoaded', () => {
-    initScene();
-  });
-
-  function initScene() {
-    // Panggil semua scene utama (pastikan fungsinya ada di bawah)
-    if (typeof startKeyInput === 'function') startKeyInput();
-    if (typeof startTransmissionScene === 'function') startTransmissionScene();
-    if (typeof startScorpioScene === 'function') startScorpioScene();
-  }
-</script>
-
 
 /* === 🎯 Wrapper tengah untuk teks + kue === */
 #centerWrapper {
@@ -768,8 +770,9 @@ document.getElementById("beginButton").addEventListener("click", async function(
 });
 </script>
 
-  <!-- Scorpio logo image (same as original) -->
+  <div id="scorpioCenter">
   <img src="https://s12.gifyu.com/images/b3bZv.png" class="logo" id="scorpioLogo" alt="Scorpio Logo" />
+</div>
 
   <!-- SVG path (same as original) -->
   <svg id="heartSVG" width="600" height="560" viewBox="0 0 600 560" style="position:absolute; left:-9999px; top:-9999px;">
@@ -819,18 +822,6 @@ document.getElementById("beginButton").addEventListener("click", async function(
 
   <!-- We'll load Three.js & GSAP only when starting Scorpio to preserve "identical" behavior -->
   <script>
-
-    // Atur gaya ulang biar teks bisa turun baris normal
-  const pList = textBlock.querySelectorAll('p');
-  pList.forEach(p => {
-    p.style.wordBreak = 'break-word';
-    p.style.overflowWrap = 'anywhere';
-    p.style.whiteSpace = 'normal';
-    p.style.display = 'block';
-    p.style.textAlign = 'center';
-  });
-
-
   /* ================= AUDIO & FLAGS ================= */
   const READY_VOLUME = 0.8, GO_VOLUME = 0.5, BGM_VOLUME = 0.72;
   const readySound = document.getElementById('readySound');
@@ -1434,7 +1425,7 @@ renderer.domElement.style.top = '0';
 renderer.domElement.style.left = '0';
 renderer.domElement.style.zIndex = 6;
 renderer.domElement.style.pointerEvents = 'none';
-document.body.appendChild(renderer.domElement);
+document.getElementById('scorpioCenter').appendChild(renderer.domElement);
 
 // agar background CSS kelihatan (transparan)
 renderer.setClearColor(0x000000, 0);
@@ -1471,7 +1462,6 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.3));
     const glowMesh = new THREE.Mesh(glowGeo, glowMat);
     glowMesh.rotation.x = Math.PI * -0.5;
     glowMesh.position.z = -20;
-    scene.add(glowMesh);
     gsap.to(glowMesh.scale, { x:1.05, y:1.05, duration:4, yoyo:true, repeat:-1, ease:"sine.inOut" });
 
     /* Build targets from SVG path (same mapping as original) */
@@ -1510,6 +1500,14 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
     const points = new THREE.Points(geom, mat);
     scene.add(points);
+
+  // ✨ Pastikan posisi awal benar-benar di tengah
+scene.position.x = 0;
+scene.position.y = 0;
+points.position.x = 0;
+points.position.y = 0;
+
+
 
     /* current positions array to tween (mimic original 'current' array) */
     const current = [];
@@ -1604,13 +1602,19 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.3));
     }
     render();
 
-    window.addEventListener('resize', ()=>{
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
-    });
+ // 🔁 biar tetap center saat ukuran layar berubah (HP / fullscreen)
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.domElement.style.width = '100%';
+  renderer.domElement.style.height = '100%';
+  scene.position.set(0, 0, 0);
+  points.position.set(0, 0, 0);
+  camera.position.set(0, 0, 600);
+});
 
-    // setelah 12 detik Scorpio berjalan, lanjut ke Incoming Transmission
+ // setelah 12 detik Scorpio berjalan, lanjut ke Incoming Transmission
     setTimeout(() => {
   startTransmissionScene();
 }, 12000);
@@ -1637,40 +1641,15 @@ function startTransmissionScene() {
   lines.forEach(line => {
     const text = line.textContent;
     line.innerHTML = '';
-    // split text into words, animate per-word but still animate letters inside
-const words = text.split(' ');
-words.forEach((word, wi) => {
-  const wordSpan = document.createElement('span');
-  wordSpan.className = 'word'; // wrapper untuk mencegah pemecahan di tengah kata
-  wordSpan.style.whiteSpace = 'nowrap'; // jaga kata tetap utuh
-  
-  // animasi per huruf di dalam kata
-  for (const ch of word) {
-    const chSpan = document.createElement('span');
-    chSpan.className = 'char';
-    chSpan.textContent = ch;
-    chSpan.style.display = 'inline-block';
-    chSpan.style.animation = 'letterGlow 0.6s ease forwards';
-    chSpan.style.animationDelay = `${delay}s`;
-    wordSpan.appendChild(chSpan);
-    delay += 0.06;
-  }
-
-  // tambahkan spasi antar kata
-  const spacer = document.createElement('span');
-  spacer.textContent = ' ';
-  spacer.style.display = 'inline-block';
-  spacer.style.width = '0.35em';
-
-  // append word + spacer
-  line.appendChild(wordSpan);
-  if (wi < words.length - 1) {
-    line.appendChild(spacer);
-    delay += 0.02;
-  }
-});
-delay += 0.6;
-
+    for (const char of text) {
+      const span = document.createElement('span');
+      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.style.animation = 'letterGlow 0.6s ease forwards';
+      span.style.animationDelay = `${delay}s`;
+      line.appendChild(span);
+      delay += 0.09;
+    }
+    delay += 0.6;
   });
 
 // —— Tambahan animasi per huruf untuk "J.Tan" —— 
