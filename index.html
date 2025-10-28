@@ -107,16 +107,17 @@ letter-spacing: 1px;
 #transmission {
   position: fixed;
   inset: 0;
-  display: none;
-  justify-content: center;
-  align-items: center;
+  display: flex;
+  justify-content: center;      /* ⬅️ tetap center vertikal */
+  align-items: center;          /* ⬅️ tetap center horizontal */
   flex-direction: column;
   text-align: center;
   background: #0c0c0c;
   opacity: 0;
   transition: opacity 1.5s ease;
   z-index: 25;
-  overflow: hidden; /* sementara biar nggak scroll dulu */
+  overflow-y: auto;             /* ⬅️ biar gak kepotong di HP */
+  padding: 4vh 0;               /* ⬅️ jarak aman atas–bawah */
 }
 
 /* 🔧 Pastikan teks dan huruf November Skies tetap stabil & benar-benar center */
@@ -139,7 +140,7 @@ letter-spacing: 1px;
   opacity: 0;
 }
 
-/* Container tengah */
+/* Container tengah (versi asli/lama) */
 .mast {
   position: relative;
   width: 90%;
@@ -148,8 +149,6 @@ letter-spacing: 1px;
   padding: 4rem 2rem;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  margin: auto; /* ✅ ini kuncinya */
-  transform: none; /* ❌ hapus dorongan ke atas */
   box-sizing: border-box;
 }
 
@@ -242,13 +241,14 @@ letter-spacing: 1px;
 /* === EVEN IN SILENCE (CENTERED TEXT) === */
 .mast__text {
   font-family: "Cutive Mono", monospace;
-  font-size: clamp(1rem, 3vw, 1.4rem); /* ✅ biar otomatis sesuai ukuran layar */
-  line-height: 1.8;
+  font-size: 1.2rem;
+  line-height: 1.9;
   margin: 0 auto;
-  text-align: center; /* ✅ selalu di tengah, gak justify */
+  text-align: center;        /* ⬅️ biar balik kayak dulu, gak justify */
   color: #fff;
-  max-width: 700px; /* ✅ batasi biar gak kepotong di HP */
-  box-sizing: border-box;
+  max-width: 800px;
+  word-break: keep-all;      /* ⬅️ biar kata gak kepotong */
+  white-space: normal;
 }
 
 @media (max-width: 500px) {
