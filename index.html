@@ -202,17 +202,6 @@ letter-spacing: 1px;
   background-color: rgba(255,255,255,0.4);
 }
 
-/* 🧩 Fix kata terpotong di HP (November Skies) */
-@media (max-width: 600px) {
-  #transmission p {
-    white-space: normal;
-    overflow-wrap: break-word;
-    word-break: keep-all;  /* kata tidak dipecah tengah huruf */
-    hyphens: none;         /* matikan pemotongan otomatis */
-    padding: 0 1.5rem;     /* beri jarak kiri–kanan biar lega */
-  }
-}
-
 .mast__text {
   font-family: "Cutive Mono", monospace;
   font-size: 1.2rem;
@@ -242,8 +231,6 @@ letter-spacing: 1px;
 /* Import font baru */
 @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
-
 /* 📱 Fix final huruf terpotong di HP */
 @media (max-width: 600px) {
   .mast {
@@ -253,7 +240,7 @@ letter-spacing: 1px;
   }
 
   #transmission p {
-    font-size: 0.80rem;
+    font-size: 0.95rem;
     line-height: 1.8;
     white-space: normal;
     word-break: normal;
@@ -1859,4 +1846,3 @@ function startDustEffect() {
 
 </body>
 </html>
-
