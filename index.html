@@ -242,23 +242,26 @@ letter-spacing: 1px;
 /* Import font baru */
 @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
 
-/* 📱 Fix final biar huruf November Skies gak kepotong di HP */
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+
+/* 📱 Fix final huruf terpotong di HP */
 @media (max-width: 600px) {
   .mast {
-    max-width: 98%;        /* teks jadi lebih lega */
-    padding: 2rem 0.5rem;  /* tambah ruang kiri–kanan */
-    transform: none;       /* hilangin dorongan ke atas di mobile */
+    max-width: 98%;
+    padding: 2rem 0.5rem;
+    transform: none;
   }
 
   #transmission p {
-    font-size: 0.95rem;        /* kecilin dikit biar muat */
+    font-size: 0.95rem;
     line-height: 1.8;
     white-space: normal;
     word-break: normal;
-    overflow-wrap: anywhere;   /* biar pindah baris di spasi aja */
+    overflow-wrap: anywhere;
     hyphens: none;
   }
 }
+</style>
 
 
 /* === 🎯 Wrapper tengah untuk teks + kue === */
