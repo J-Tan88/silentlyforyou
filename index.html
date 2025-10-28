@@ -788,6 +788,35 @@ document.getElementById("beginButton").addEventListener("click", async function(
 
   <!-- We'll load Three.js & GSAP only when starting Scorpio to preserve "identical" behavior -->
   <script>
+
+  /*
+    Fix khusus untuk teks "November Skies"
+    Supaya tidak terpotong di tengah kata, tapi animasi tetap jalan.
+  */
+  function fixNovemberSkiesText() {
+    const elements = document.querySelectorAll('.js-line');
+    elements.forEach(el => {
+      const words = el.textContent.trim().split(' ');
+      el.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', fixNovemberSkiesText);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .word {
+      display: inline-block;
+      opacity: 0;
+      animation: wordFade 0.6s ease forwards;
+    }
+    @keyframes wordFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  `;
+  document.head.appendChild(style);
+
   /* ================= AUDIO & FLAGS ================= */
   const READY_VOLUME = 0.8, GO_VOLUME = 0.5, BGM_VOLUME = 0.72;
   const readySound = document.getElementById('readySound');
