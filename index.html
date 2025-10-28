@@ -178,10 +178,21 @@ letter-spacing: 1px;
   margin: 0.8em 0;
   text-align: center;
   white-space: normal;
-  word-wrap: break-word;
-  word-break: break-word;
+  word-wrap: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
   color: #ffffff;
 }
+
+@media (max-width: 600px) {
+  #transmission p {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    word-wrap: normal;
+    padding: 0 1.2rem;
+  }
+}
+
 
 /* Isi teks */
 .mast__header { position: relative; z-index: 2; margin: auto; max-width: 750px; }
