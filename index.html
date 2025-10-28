@@ -3,11 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Happy Birthday → Someone</title>
+<title>Happy Birthday → Scorpio (combined)</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-
 <style>
   /* GLOBAL */
   body { margin:0; background-color:#141414; overflow:hidden; height:100vh; font-family: 'Poppins', sans-serif; cursor:crosshair; }
@@ -83,323 +80,122 @@ letter-spacing: 1px;
   }
 }
 
-/* === NOVEMBER SKIES SCENE === */
-#transmission {
+/* === INCOMING TRANSMISSION SCENE === */
+.transmission {
+  display: none;
   position: fixed;
   inset: 0;
-  display: none;
+  background: radial-gradient(circle at center, #0d0d0d 0%, #000 100%);
+  color: #fff;
+  font-family: "Cutive Mono", monospace;
+  text-align: center;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: #0c0c0c;
-  opacity: 0;
   z-index: 25;
-  transition: opacity 1.5s ease;
-  overflow: hidden;
-}
-
-/* sembunyikan teks sebelum animasi huruf dimulai */
-#transmission h1,
-#transmission p {
   opacity: 0;
+  transition: opacity 2s ease;
 }
 
-/* Container tengah */
-.mast {
+.transmission h1 {
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-size: 1.2em;
+  margin-bottom: 1em;
+}
+
+.transmission p {
+  white-space: pre-line;
+  max-width: 600px;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.transmission span {
+  display: inline-block;
+  opacity: 0;
+  animation: letter-glow 0.7s ease forwards;
+}
+
+@keyframes letter-glow {
+  0% {
+    opacity: 0;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  66% {
+    opacity: 1;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+  }
+  100% {
+    opacity: 0.7;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0);
+  }
+}
+
+/* Tambahan untuk efek huruf yang mempertahankan spasi & baris baru */
+.transmission .tx-char {
+  display: inline-block;
+  white-space: pre;
+}
+
+.transmission .tx-space {
+  display: inline-block;
+  width: 0.45em;
+}
+
+/* === NEON FRAME STYLE === */
+.frame-container {
   position: relative;
-  width: 90%;
-  max-width: 800px;
-  text-align: center;
-  padding: 4rem 2rem;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  transform: translateY(-8%);
+  display: inline-block;
+  padding: 80px 60px;
+  border-radius: 12px;
 }
 
-/* Garis neon atas–bawah */
-.mast::before,
-.mast::after {
+.neon-frame {
+  position: relative;
+  text-align: center;
+}
+
+.neon-frame::before,
+.neon-frame::after {
   content: "";
   position: absolute;
   left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(270deg, #ff00ff, #00ffff, #ff00ff);
-  background-size: 400% 400%;
-  animation: moveNeon 2s linear infinite;
-  box-shadow: 0 0 15px rgba(255, 0, 255, 0.8),
-              0 0 25px rgba(0, 255, 255, 0.8);
-}
-.mast::before { top: 0; }
-.mast::after  { bottom: 0; }
-
-@keyframes moveNeon {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-
-/* Tulisan pojok kanan bawah (J.Tan) */
-.mast__signature-text {
-  position: absolute;
-  right: 2.2rem;
-  bottom: 1.3rem;
-  font-size: 1.3rem;
-  font-family: "Dancing Script", cursive;
-  color: #ffe6ff;
-  letter-spacing: 0.05em;
-  opacity: 0.9;
-  text-shadow: 0 0 10px rgba(255, 180, 255, 0.8),
-               0 0 18px rgba(153, 221, 255, 0.6);
-  transition: opacity 0.4s ease, text-shadow 0.4s ease;
-}
-
-.mast__signature-text:hover {
-  opacity: 1;
-  text-shadow: 0 0 15px rgba(255, 200, 255, 1),
-               0 0 25px rgba(153, 221, 255, 0.9);
-}
-
-/* === Gaya teks di dalam scene November Skies === */
-#transmission h1 {
-  font-family: 'Cutive Mono', monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  display: inline-block;
-  color: #ffffff;
-}
-
-#transmission p {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 1.05rem;
-  line-height: 1.8;
-  margin: 0.8em 0;
-  text-align: center;
-  white-space: normal;
-  word-wrap: break-word;
-  word-break: break-word;
-  color: #ffffff;
-}
-
-/* Isi teks */
-.mast__header { position: relative; z-index: 2; margin: auto; max-width: 750px; }
-.mast__title {
-  font-family: "Cutive Mono", monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 1.6rem;
-  margin-bottom: 1rem;
-  display: inline-block;
-  color: #fff;
-}
-.sep {
-  border: 0;
-  width: 3em;
-  height: 1px;
-  margin: 1em auto;
-  background-color: rgba(255,255,255,0.4);
-}
-.mast__text {
-  font-family: "Cutive Mono", monospace;
-  font-size: 1.2rem;
-  line-height: 1.9;
-  margin: 0 auto;
-  text-align: justify;
-  text-align-last: center;
-  color: #fff;
-}
-.mast__text p {
-  margin: 0.8em 0;
-  text-align: center;
-}
-.mast__text span {
-  opacity: 0;
-  display: inline-block;
-  animation: letterGlow 0.6s ease forwards;
-}
-.nobreak-text { display: inline-block; white-space: nowrap; }
-
-@keyframes letterGlow {
-  0%   { opacity: 0; text-shadow: 0 0 2px rgba(255,255,255,0.1);}
-  50%  { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.9);}
-  100% { opacity: 0.9; text-shadow: 0 0 2px rgba(255,255,255,0);}
-}
-
-/* Import font baru */
-@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
-
-/* === 🎂 Birthday Cake + Candle Flame === */
-#cakeWrapper {
-  position: absolute;
-  top: 63%;
-  left: 45%;
-  transform: translate(-50%, 0);
-  display: none;
-  z-index: 3;
-  pointer-events: none;
-  filter: drop-shadow(0 0 20px rgba(255, 200, 100, 0.4));
-}
-
-#cakeImg {
-  width: 170px; /* 🧁 jauh lebih kecil */
-  filter: brightness(0.9) contrast(1.1)
-  drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
-}
-
-/* 🕯️ Lilin ulang tahun kecil & terang */
-#birthdayCandle {
-  position: absolute;
-  top: 52%; /* sesuaikan posisi di atas kue */
-  left: 48%;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-}
-
-/* batang lilin */
-#candleBase {
-  position: absolute;
-  top: 58%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 5px;
-  height: 20px;
-  background: linear-gradient(to bottom, #ffb6c1 0%, #ff69b4 100%);
-  border-radius: 3px;
-  box-shadow:
-    0 -4px 8px rgba(255, 180, 60, 0.6),   /* pantulan cahaya api di atas */
-    0 2px 3px rgba(255, 100, 150, 0.5);   /* bayangan lembut di bawah */
-  z-index: 3;
-}
-
-/* 🔥 Api dengan efek cahaya kuning hidup */
-#candleFlame {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translate(-50%, 5%);
-  width: 13px;
-  height: 26px;
-  border-radius: 50% 50% 40% 40% / 85% 85% 25% 25%;
-  background: radial-gradient(circle at 50% 20%,
-              rgba(255,255,255,1) 0%,           
-              rgba(255,250,200,0.98) 25%,       
-              rgba(255,220,100,0.9) 50%,        
-              rgba(255,160,40,0.7) 70%,         
-              rgba(255,80,0,0.35) 90%,          
-              transparent 100%);
-  box-shadow:
-  0 0 25px rgba(255,255,210,0.9),
-  0 0 60px rgba(255,210,120,0.7),
-  0 0 100px rgba(255,170,60,0.5);
-  animation:
-    candleFlicker 0.05s infinite alternate ease-in-out,
-    candleFlash 0.25s infinite ease-in-out,
-    candleGlowPulse 2s infinite ease-in-out;  /* ✨ efek cahaya kuning */
-  filter: brightness(2) contrast(1.3) saturate(1.25);
-  opacity: 1;
-  z-index: 5;
-}
-
-/* 🔧 Tambahan animasi agar nyala api benar-benar hidup */
-@keyframes candleFlicker {
-  0% { transform: translate(-50%, 5%) scaleY(1); }
-  50% { transform: translate(-50%, 6%) scaleY(1.1); }
-  100% { transform: translate(-50%, 5%) scaleY(0.95); }
-}
-
-@keyframes candleGlowPulse {
-  0%, 100% {
-    box-shadow:
-      0 0 25px rgba(255,255,210,0.9),
-      0 0 60px rgba(255,210,120,0.7),
-      0 0 100px rgba(255,170,60,0.5);
-  }
-  50% {
-    box-shadow:
-      0 0 35px rgba(255,255,230,1),
-      0 0 80px rgba(255,230,150,0.8),
-      0 0 120px rgba(255,180,70,0.6);
-  }
-}
-
-/* ✨ Api benar-benar berkedip cepat (terang–redup alami) */
-@keyframes candleFlash {
-  0%   { filter: brightness(1.4); opacity: 1; }
-  10%  { filter: brightness(2.0); opacity: 0.95; }
-  20%  { filter: brightness(1.6); opacity: 0.85; }
-  30%  { filter: brightness(2.3); opacity: 1; }
-  40%  { filter: brightness(1.7); opacity: 0.9; }
-  50%  { filter: brightness(2.2); opacity: 1; }
-  60%  { filter: brightness(1.5); opacity: 0.8; }
-  70%  { filter: brightness(2.0); opacity: 0.95; }
-  80%  { filter: brightness(1.6); opacity: 0.85; }
-  90%  { filter: brightness(2.4); opacity: 1; }
-  100% { filter: brightness(1.8); opacity: 0.9; }
-}
-
-/* ✨ Percikan api kecil di sekitar lilin */
-#candleSparks {
-  position: absolute;
-  bottom: 110%;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  background: radial-gradient(circle,
-    rgba(255,240,180,1) 0%,
-    rgba(255,180,60,0.3) 70%,
-    transparent 100%);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  animation:
-    sparkFlicker 0.5s infinite ease-in-out,
-    sparkMove 1.2s infinite ease-in-out;
-  opacity: 0.8;
-  filter: blur(1px);
-  z-index: 6;
-}
-
-/* 🔸 Percikan berkedip */
-@keyframes sparkFlicker {
-  0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
-  50% { opacity: 0.3; transform: translateX(-50%) scale(1.4); }
-}
-
-/* 🔸 Percikan bergerak lembut naik-turun */
-@keyframes sparkMove {
-  0% { transform: translate(-50%, -1px); }
-  25% { transform: translate(-48%, -3px); }
-  50% { transform: translate(-52%, -6px); }
-  75% { transform: translate(-50%, -3px); }
-  100% { transform: translate(-50%, -1px); }
-}
-
-/* ✨ Tambahan percikan lain untuk variasi (opsional) */
-#candleSparks::before,
-#candleSparks::after {
-  content: '';
-  position: absolute;
-  width: 3px;
+  right: 0;
   height: 3px;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    rgba(255,230,150,1) 0%,
-    rgba(255,180,60,0.2) 70%,
-    transparent 100%);
-  animation:
-    sparkFlicker 0.6s infinite ease-in-out alternate,
-    sparkMove 1.4s infinite ease-in-out alternate;
+  background: linear-gradient(90deg, #00e5ff, #ff00c8);
+  box-shadow: 0 0 20px rgba(0,229,255,0.8),
+              0 0 40px rgba(255,0,200,0.6),
+              0 0 60px rgba(255,255,255,0.4);
+  opacity: 0;
+  transform: scaleX(0);
+  border-radius: 3px;
 }
 
-#candleSparks::before {
-  left: -6px;
-  animation-delay: 0.2s;
+/* Geser posisi garis biar bingkai lebih tinggi */
+.neon-frame::before {
+  top: -80px; /* jarak garis atas dari teks */
+  transform-origin: left center;
 }
 
-#candleSparks::after {
-  left: 6px;
-  animation-delay: 0.4s;
+.neon-frame::after {
+  bottom: -80px; /* jarak garis bawah dari teks */
+  transform-origin: right center;
 }
+
+.transmission.show-frame .neon-frame::before,
+.transmission.show-frame .neon-frame::after {
+  opacity: 1;
+  animation: drawFrame 1.4s ease forwards;
+}
+
+@keyframes drawFrame {
+  0% { transform: scaleX(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+</style>
 
 </style>
 </head>
@@ -424,18 +220,6 @@ letter-spacing: 1px;
   <canvas id="c"></canvas>
 
   <h1 id="wish">Happy Birthday<br>Someone 🎂</h1>
-  <!-- 🎂 Birthday Cake + Candle -->
-
-<div id="cakeWrapper">
-  <img id="cakeImg" src="https://s12.gifyu.com/images/b3d2t.png" alt="Birthday Cake" />
-  
-  <!-- 🕯️ Lilin kecil lengkap -->
-  <div id="birthdayCandle">
-    <div id="candleBase"></div>
-    <div id="candleFlame"></div>
-      <div id="candleSparks"></div>
-  </div>
-</div>
 
   <!-- Audio elements -->
   <audio id="readySound" src="https://cdn.jsdelivr.net/gh/hantulautz88/bdaysound/ready_iZVXBQL.mp3" preload="auto"></audio>
@@ -464,28 +248,19 @@ letter-spacing: 1px;
       M540 360 L560 400 
       M560 400 L580 360" fill="none" stroke="none"></path>
   </svg>
- <div id="transmission">
-  <section class="mast">
-    <header class="mast__header">
-      <h1 class="mast__title js-spanize">November Skies</h1>
-      <hr class="sep"/>
-      <div class="mast__text" id="text-block">
-        <p class="js-line">Today, I send all my best prayers for you to the skies.</p>
-        <p class="js-line">May the things that bring you down also become reasons for your growth.</p>
-        <p class="js-line">May the world always protect you wherever you are.</p>
-        <p class="js-line">May your days be accompanied by boundless love,</p>
-        <p class="js-line">
-  And may the smiles of your parent, which you have always strived for,
-  <span class="nobreak-text">Now be fulfilled.</span>
-</p>
-        </p>
-      </div>
-    </header>
-
-    <div class="mast__signature-text">J.Tan</div>
-
-  </section>
+  <!-- Incoming Transmission Scene -->
+<div id="transmission" class="transmission">
+  <div class="frame-container">
+    <div class="neon-frame">
+      <h1>Incoming Transmission</h1>
+      <p>This is a story, all about how,
+      My life got twisted upside down.
+      So I'd like to tell a story, just sit right there.
+      And I'll tell you how I became the prince of Bel Air.</p>
+    </div>
+  </div>
 </div>
+
 
   <!-- Spiral Scene (lanjutan setelah Scorpio) -->
   <div id="spiral" class="spiral"></div>
@@ -613,7 +388,7 @@ letter-spacing: 1px;
       startBalloonEffect();
       fadeOverlay.style.opacity = "0";
       // schedule final transition (adjustable)
-      setTimeout(()=> triggerScorpioTransition(), 34500); // 8s after fireworks start
+      setTimeout(()=> triggerScorpioTransition(), 11500); // 8s after fireworks start
     }, 1300);
   }
 
@@ -902,46 +677,6 @@ letter-spacing: 1px;
         }
       }
     };
-
-  // 🎂 Kue muncul tiap kali teks "HAPPY BIRTHDAY!" muncul
-const cake = document.getElementById('cakeWrapper');
-cake.style.display = 'block';
-cake.style.opacity = 0;
-
-let cycleCount = 0;
-const MAX_CYCLE = 3;
-
-async function playCakePerCycle() {
-  for (cycleCount = 1; cycleCount <= MAX_CYCLE; cycleCount++) {
-    // 🎉 Muncul pelan-pelan
-    await new Promise(r => setTimeout(r, 2000));
-    cake.animate(
-      [
-        { opacity: 0, transform: 'translate(0, -45%) scale(0.6)' },
-        { opacity: 1, transform: 'translate(0, -45%) scale(0.8)' }
-      ],
-      { duration: 800, easing: 'ease-out', fill: 'forwards' }
-    );
-
-    // 🕯️ Naik dan hilang
-    await new Promise(r => setTimeout(r, 8800 - 2000)); // jeda 6.8 detik
-    cake.animate(
-      [
-        { transform: 'translate(0, -45%) scale(0.8)', opacity: 1 },
-        { transform: 'translate(0, -250px) scale(0.6)', opacity: 0 }
-      ],
-      { duration: 1800, easing: 'ease-in-out', fill: 'forwards' }
-    );
-
-    // ⏳ Tunggu sampai animasi selesai dulu baru lanjut ke siklus berikutnya
-    await new Promise(r => setTimeout(r, 3000));
-  }
-}
-
-// 🚀 Jalankan loop kue
-playCakePerCycle();
-
-
 
     function anim2(){
       requestAnimationFrame(anim2);
@@ -1295,49 +1030,54 @@ function startTransmissionScene() {
   t.style.display = 'flex';
   gsap.to(t, { opacity: 1, duration: 2, ease: "power2.inOut" });
 
-  // Tambahkan bingkai neon setelah sedikit delay
-  setTimeout(() => t.classList.add('show-frame'), 800);
-
-  // 🌌 Efek huruf per huruf mirip "November Skies" original
+    // 🔹 Tambahkan class agar bingkai neon muncul setelah fade-in
   setTimeout(() => {
-   const lines = t.querySelectorAll('h1, p');
-  lines.forEach(line => line.style.opacity = 1); // 🔸 tambahan baru
-  let delay = 0;
+    t.classList.add('show-frame');
+  }, 800);
 
-  // munculkan elemen dulu pelan-pelan biar gak kelihatan bayangan awal
-  gsap.to(lines, { opacity: 1, duration: 0.5, delay: 0.3 });
 
-  lines.forEach(line => {
-    const text = line.textContent;
-    line.innerHTML = '';
-    for (const char of text) {
-      const span = document.createElement('span');
-      span.textContent = char === ' ' ? '\u00A0' : char;
-      span.style.animation = 'letterGlow 0.6s ease forwards';
-      span.style.animationDelay = `${delay}s`;
-      line.appendChild(span);
-      delay += 0.05;
+   // Efek animasi huruf per huruf (spanize) — versi fix (jaga spasi & baris baru)
+const textEls = [ ...t.querySelectorAll('h1'), ...t.querySelectorAll('p') ];
+textEls.forEach(el => {
+  const raw = el.textContent; // ambil teks apa adanya
+  let out = '';
+  Array.from(raw).forEach((ch, idx) => {
+    if (ch === '\n' || ch === '\r') {
+      out += '<br>'; // ganti baris baru jadi <br>
+    } else if (ch === ' ') {
+      out += `<span class="tx-char tx-space" style="animation-delay:${idx * 0.05}s">&nbsp;</span>`;
+    } else {
+      out += `<span class="tx-char" style="animation-delay:${idx * 0.05}s">${ch}</span>`;
     }
-    delay += 0.6;
   });
-}, 1200);
+  el.innerHTML = out;
+});
 
-  // 🔥 Hilangkan logo Scorpio & canvas pelan-pelan
+
+// 🔥 Tambahan: paksa browser render ulang biar animasi aktif
+setTimeout(() => {
+  t.querySelectorAll('span').forEach(span => {
+    span.style.animationPlayState = 'running';
+  });
+}, 50);
+
+
+  // Fade out Scorpio logo dan canvas biar halus
   gsap.to('#scorpioLogo', { opacity: 0, duration: 2, ease: "power2.inOut" });
   gsap.to('canvas', { opacity: 0, duration: 2.5, ease: "power2.inOut" });
 
-  // setelah 12 detik, fade out dan lanjut ke Spiral Scene
-setTimeout(() => {
-  gsap.to(t, {
-    opacity: 0,
-    duration: 2,
-    ease: "power2.inOut",
-    onComplete: () => {
-      t.style.display = 'none';
-      startSpiralScene();
-    }
-  });
-}, 27000);
+  // Setelah 12 detik, lanjut otomatis ke Spiral Scene
+  setTimeout(() => {
+    gsap.to(t, {
+      opacity: 0,
+      duration: 2,
+      ease: "power2.inOut",
+      onComplete: () => {
+        t.style.display = 'none';
+        startSpiralScene();
+      }
+    });
+  }, 12000); // ubah angka ini kalau mau ubah durasi
 }
 
 /* ================= SPIRAL SCENE ================= */
@@ -1484,40 +1224,6 @@ window.onload = ()=> {
 
 <!-- GSAP is used in the 2D/transition; we include it upfront to allow the 2D timeline to use gsap -->
 <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-(function($) {
-  function animateLine($line, delayStart) {
-    const noBreakEl = $line.find(".nobreak-text");
-    const noBreakText = noBreakEl.text() || "";
-    let text = $line.clone().children().remove().end().text().trim();
-    $line.html("");
-    let totalDelay = delayStart;
-    for (let char of text) {
-      const span = $("<span>").text(char === " " ? "\u00A0" : char);
-      span.css("animation-delay", `${totalDelay}s`);
-      $line.append(span);
-      totalDelay += 0.05;
-    }
-    if (noBreakText) {
-      const stable = $("<span>")
-        .addClass("nobreak-text")
-        .text(" " + noBreakText);
-      stable.css("animation-delay", `${totalDelay}s`);
-      $line.append(stable);
-    }
-    return totalDelay + 0.6;
-  }
-
-  window.animateNovemberSkies = function() {
-    let delay = 0;
-    $(".js-line").each(function() {
-      delay = animateLine($(this), delay);
-    });
-  };
-})(jQuery);
-</script>
 
 </body>
 </html>
