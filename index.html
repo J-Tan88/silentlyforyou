@@ -284,6 +284,42 @@ letter-spacing: 1px;
   50%  { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.9);}
   100% { opacity: 0.9; text-shadow: 0 0 2px rgba(255,255,255,0);}
 }
+
+/* === 📱 RESPONSIVE FIX UNTUK MOBILE PORTRAIT === */
+@media screen and (max-width: 600px) {
+  /* Buat November Skies bisa muat di layar HP */
+  #transmission {
+    padding: 8vh 5vw;
+    justify-content: flex-start; /* biar gak terlalu tinggi di tengah */
+    align-items: center;
+  }
+
+  .mast {
+    width: 95%;
+    padding: 2rem 1rem;
+    transform: none;
+  }
+
+  .mast__text,
+  #transmission p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: center;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  /* Biarkan tulisan Even in Silence tetap center tapi gak keluar layar */
+  #centerWrapper {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  #wish {
+    font-size: 1.6rem;
+    line-height: 1.3;
+  }
+}
+
 /* ⬇️ Tambahkan di sini, ini posisi yang benar */
 @media screen and (max-width: 600px) {
   #transmission {
