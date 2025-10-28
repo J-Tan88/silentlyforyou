@@ -105,37 +105,20 @@ letter-spacing: 1px;
 
 /* === NOVEMBER SKIES SCENE === */
 #transmission {
-  position: relative;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center;      /* ⬅️ tetap center vertikal */
+  align-items: center;          /* ⬅️ tetap center horizontal */
   flex-direction: column;
   text-align: center;
   background: #0c0c0c;
   opacity: 0;
   transition: opacity 1.5s ease;
   z-index: 25;
-  overflow-y: auto;
-  padding: 6vh 1.5rem; /* ruang aman atas-bawah & kiri-kanan */
-  box-sizing: border-box;
+  overflow-y: auto;             /* ⬅️ biar gak kepotong di HP */
+  padding: 4vh 0;               /* ⬅️ jarak aman atas–bawah */
 }
-
-@media (max-width: 600px) {
-  #transmission {
-    justify-content: flex-start; /* biar gak kejepit di tengah */
-    align-items: center;
-    padding-top: 10vh; /* turunin dikit buat HP portrait */
-  }
-
-  .mast__text {
-    font-size: 1rem;
-    line-height: 1.6;
-    max-width: 90vw;
-    word-break: break-word;
-  }
-}
-
 
 /* 🔧 Pastikan teks dan huruf November Skies tetap stabil & benar-benar center */
 #transmission .mast__title span {
@@ -189,16 +172,6 @@ letter-spacing: 1px;
 @keyframes moveNeon {
   0%   { background-position: 0% 50%; }
   100% { background-position: 100% 50%; }
-}
-
-/* ⬇️ Tempel di bawah sini */
-@media screen and (max-width: 600px) {
-  #transmission {
-    padding-top: 6vh;
-    padding-bottom: 6vh;
-    justify-content: center;
-    align-items: center;
-  }
 }
 
 /* Tulisan pojok kanan bawah (J.Tan) */
@@ -300,58 +273,6 @@ letter-spacing: 1px;
   0%   { opacity: 0; text-shadow: 0 0 2px rgba(255,255,255,0.1);}
   50%  { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.9);}
   100% { opacity: 0.9; text-shadow: 0 0 2px rgba(255,255,255,0);}
-}
-
-/* === 📱 RESPONSIVE FIX UNTUK MOBILE PORTRAIT === */
-@media screen and (max-width: 600px) {
-  /* Buat November Skies bisa muat di layar HP */
-  #transmission {
-    padding: 8vh 5vw;
-    justify-content: flex-start; /* biar gak terlalu tinggi di tengah */
-    align-items: center;
-  }
-
-  .mast {
-    width: 95%;
-    padding: 2rem 1rem;
-    transform: none;
-  }
-
-  .mast__text,
-  #transmission p {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    text-align: center;
-    word-break: break-word;
-    white-space: normal;
-  }
-
-  /* Biarkan tulisan Even in Silence tetap center tapi gak keluar layar */
-  #centerWrapper {
-    transform: translate(-50%, -50%) scale(0.9);
-  }
-
-  #wish {
-    font-size: 1.6rem;
-    line-height: 1.3;
-  }
-}
-
-/* ⬇️ Tambahkan di sini, ini posisi yang benar */
-@media screen and (max-width: 600px) {
-  #transmission {
-    overflow-y: auto;
-    padding: 5vh 0;
-  }
-
-  .mast__text {
-    max-width: 90vw;
-    padding: 0 1rem;
-    font-size: 1rem;
-    line-height: 1.6;
-    word-break: break-word;
-    white-space: normal;
-  }
 }
 
 /* Import font baru */
