@@ -103,9 +103,8 @@ letter-spacing: 1px;
   transform: translate(-48%, -52%);
 }
 
-/* ✅ FINAL RESPONSIVE FIX — keep November Skies centered like desktop */
+/* === NOVEMBER SKIES SCENE === */
 @media (max-width: 500px) {
-
   #transmission {
     position: fixed;
     inset: 0;
@@ -113,35 +112,17 @@ letter-spacing: 1px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: #0c0c0c;
-    overflow: hidden;           /* jangan scroll */
-    transform: scale(0.85);     /* perkecil seluruh isi */
+    overflow: hidden;
+    transform: scale(0.75);   /* 🔹 kecilin seluruh scene biar muat di layar HP */
     transform-origin: center center;
   }
 
   .mast {
-    width: 90%;
-    max-width: 320px;
-    padding: 2rem 1rem;
-  }
-
-  .mast__title {
-    font-size: 1.1rem;
-    letter-spacing: 0.2em;
-  }
-
-  .mast__text {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    letter-spacing: 0.02em;
-  }
-
-  .mast__signature-text {
-    font-size: 1rem;
-    bottom: 1.8rem;
+    max-width: 800px;
+    width: 100%;
+    padding: 4rem 2rem;
   }
 }
-
 
 /* 🔧 Pastikan teks dan huruf November Skies tetap stabil & benar-benar center */
 #transmission .mast__title span {
