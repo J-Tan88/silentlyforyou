@@ -229,7 +229,21 @@ letter-spacing: 1px;
   margin-bottom: 1rem;
   display: inline-block;
   color: #fff;
+  white-space: nowrap;          /* ⬅️ BIAR GAK TURUN BARIS */
+  overflow: visible;
+  text-align: center;
+  width: 100%;
 }
+
+@media (max-width: 600px) {
+  .mast__title {
+    font-size: 1.2rem;          /* ⬅️ otomatis lebih kecil di HP */
+    letter-spacing: 0.18em;
+    white-space: nowrap;        /* ⬅️ tetap satu baris */
+    transform: scale(1.02);
+  }
+}
+
 .sep {
   border: 0;
   width: 3em;
