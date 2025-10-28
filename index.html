@@ -259,6 +259,22 @@ letter-spacing: 1px;
 
 /* Import font baru */
 @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+</style>
+
+<script>
+  // Jalankan semua scene begitu halaman siap dimuat
+  document.addEventListener('DOMContentLoaded', () => {
+    initScene();
+  });
+
+  function initScene() {
+    // Panggil semua scene utama (pastikan fungsinya ada di bawah)
+    if (typeof startKeyInput === 'function') startKeyInput();
+    if (typeof startTransmissionScene === 'function') startTransmissionScene();
+    if (typeof startScorpioScene === 'function') startScorpioScene();
+  }
+</script>
+
 
 /* === 🎯 Wrapper tengah untuk teks + kue === */
 #centerWrapper {
