@@ -186,12 +186,12 @@ letter-spacing: 1px;
 
 /* Responsif HP */
 @media (max-width: 600px) {
-  #transmission p {
-    word-break: break-word;
-    overflow-wrap: anywhere;
-    white-space: normal;
-    padding: 0 1.4rem;
-    display: block;
+  #transmission .mast__text p {
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+    padding: 0 1.4rem !important;
+    display: block !important;
   }
 }
 
@@ -238,6 +238,17 @@ letter-spacing: 1px;
   display: inline-block;
   animation: letterGlow 0.6s ease forwards;
 }
+
+/* Tambahan untuk animasi huruf per kata */
+.mast__text .word {
+  display: inline;
+  white-space: nowrap;  /* jaga satu kata utuh */
+}
+
+.mast__text .char {
+  display: inline-block; /* huruf bisa dianimasikan */
+}
+
 .nobreak-text { display: inline-block; white-space: nowrap; }
 
 @keyframes letterGlow {
@@ -793,31 +804,16 @@ document.getElementById("beginButton").addEventListener("click", async function(
   <!-- We'll load Three.js & GSAP only when starting Scorpio to preserve "identical" behavior -->
   <script>
 
-    /* ====== Fix total untuk teks "November Skies" ====== */
-  document.addEventListener('DOMContentLoaded', () => {
-    // Ambil semua paragraf di area November Skies
-    const textBlock = document.querySelector('#text-block');
-    if (!textBlock) return;
-
-    // Bersihkan semua span yang bikin huruf per huruf
-    textBlock.querySelectorAll('span').forEach(span => {
-      // kalau span cuma ngebungkus satu huruf, gabung balik ke teks
-      if (span.textContent.length === 1) {
-        span.replaceWith(span.textContent);
-      }
-    });
-
     // Atur gaya ulang biar teks bisa turun baris normal
-    const pList = textBlock.querySelectorAll('p');
-    pList.forEach(p => {
-      p.style.wordBreak = 'keep-all';
-      p.style.overflowWrap = 'normal';
-      p.style.wordWrap = 'normal';
-      p.style.whiteSpace = 'normal';
-      p.style.display = 'block';
-      p.style.textAlign = 'center';
-    });
+  const pList = textBlock.querySelectorAll('p');
+  pList.forEach(p => {
+    p.style.wordBreak = 'break-word';
+    p.style.overflowWrap = 'anywhere';
+    p.style.whiteSpace = 'normal';
+    p.style.display = 'block';
+    p.style.textAlign = 'center';
   });
+
 
   /* ================= AUDIO & FLAGS ================= */
   const READY_VOLUME = 0.8, GO_VOLUME = 0.5, BGM_VOLUME = 0.72;
@@ -1625,15 +1621,40 @@ function startTransmissionScene() {
   lines.forEach(line => {
     const text = line.textContent;
     line.innerHTML = '';
-    for (const char of text) {
-      const span = document.createElement('span');
-      span.textContent = char === ' ' ? '\u00A0' : char;
-      span.style.animation = 'letterGlow 0.6s ease forwards';
-      span.style.animationDelay = `${delay}s`;
-      line.appendChild(span);
-      delay += 0.09;
-    }
-    delay += 0.6;
+    // split text into words, animate per-word but still animate letters inside
+const words = text.split(' ');
+words.forEach((word, wi) => {
+  const wordSpan = document.createElement('span');
+  wordSpan.className = 'word'; // wrapper untuk mencegah pemecahan di tengah kata
+  wordSpan.style.whiteSpace = 'nowrap'; // jaga kata tetap utuh
+  
+  // animasi per huruf di dalam kata
+  for (const ch of word) {
+    const chSpan = document.createElement('span');
+    chSpan.className = 'char';
+    chSpan.textContent = ch;
+    chSpan.style.display = 'inline-block';
+    chSpan.style.animation = 'letterGlow 0.6s ease forwards';
+    chSpan.style.animationDelay = `${delay}s`;
+    wordSpan.appendChild(chSpan);
+    delay += 0.06;
+  }
+
+  // tambahkan spasi antar kata
+  const spacer = document.createElement('span');
+  spacer.textContent = ' ';
+  spacer.style.display = 'inline-block';
+  spacer.style.width = '0.35em';
+
+  // append word + spacer
+  line.appendChild(wordSpan);
+  if (wi < words.length - 1) {
+    line.appendChild(spacer);
+    delay += 0.02;
+  }
+});
+delay += 0.6;
+
   });
 
 // —— Tambahan animasi per huruf untuk "J.Tan" —— 
