@@ -141,7 +141,7 @@ letter-spacing: 1px;
 /* Tulisan pojok kanan bawah (J.Tan) */
 .mast__signature-text {
   opacity: 0;
-  visibility: hidden;
+  visibility: hidden; /* 🔹 penting: sembunyikan total di awal */
   position: absolute;
   right: 2.2rem;
   bottom: 1.3rem;
@@ -178,21 +178,9 @@ letter-spacing: 1px;
   margin: 0.8em 0;
   text-align: center;
   white-space: normal;
-  word-wrap: normal;
-  word-break: keep-all;
-  overflow-wrap: normal;
+  word-wrap: break-word;
+  word-break: break-word;
   color: #ffffff;
-}
-
-/* Responsif HP */
-@media (max-width: 600px) {
-  #transmission p {
-    word-break: keep-all;
-    overflow-wrap: normal;
-    word-wrap: normal;
-    padding: 0 1.4rem;
-    display: block;
-  }
 }
 
 /* Isi teks */
@@ -218,13 +206,10 @@ letter-spacing: 1px;
   font-size: 1.2rem;
   line-height: 1.9;
   margin: 0 auto;
-  text-align: center;          /* ⬅️ ubah dari justify ke center */
+  text-align: justify;
+  text-align-last: center;
   color: #fff;
-  word-break: keep-all;        /* jaga kata tetap utuh */
-  overflow-wrap: normal;       /* biar gak maksa patah */
-  word-wrap: normal;
 }
-
 .mast__text p {
   margin: 0.8em 0;
   text-align: center;
@@ -788,33 +773,6 @@ document.getElementById("beginButton").addEventListener("click", async function(
 
   <!-- We'll load Three.js & GSAP only when starting Scorpio to preserve "identical" behavior -->
   <script>
-
-    /* ====== Fix total untuk teks "November Skies" ====== */
-  document.addEventListener('DOMContentLoaded', () => {
-    // Ambil semua paragraf di area November Skies
-    const textBlock = document.querySelector('#text-block');
-    if (!textBlock) return;
-
-    // Bersihkan semua span yang bikin huruf per huruf
-    textBlock.querySelectorAll('span').forEach(span => {
-      // kalau span cuma ngebungkus satu huruf, gabung balik ke teks
-      if (span.textContent.length === 1) {
-        span.replaceWith(span.textContent);
-      }
-    });
-
-    // Atur gaya ulang biar teks bisa turun baris normal
-    const pList = textBlock.querySelectorAll('p');
-    pList.forEach(p => {
-      p.style.wordBreak = 'keep-all';
-      p.style.overflowWrap = 'normal';
-      p.style.wordWrap = 'normal';
-      p.style.whiteSpace = 'normal';
-      p.style.display = 'block';
-      p.style.textAlign = 'center';
-    });
-  });
-
   /* ================= AUDIO & FLAGS ================= */
   const READY_VOLUME = 0.8, GO_VOLUME = 0.5, BGM_VOLUME = 0.72;
   const readySound = document.getElementById('readySound');
